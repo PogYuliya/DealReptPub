@@ -37,7 +37,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 
 ## Features
 ### User Identification & Authorization
-- user registration: to access pages other than Dashboard user should register, confirm his/her email and be approved and role assigned by an administrator;
+- user registration: to access pages other than Home user should register, confirm his/her email and be approved and role assigned by an administrator;
 - after email confirmation user has ability to view own profile information, reset and change password in case he/she forgot it;
 - Deal#Rept has an embedded user with root administrator role which can not be deleted or edited, if needed another user can be assigned an administrator role (further user with administrator role are named administrator);
 - administrator checks, approves new user, assigns appropriate role (permissions), also has ability to view, edit detailed user profile information, delete, lockout, unlock or suspend the user temporarily;
