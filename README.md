@@ -46,15 +46,15 @@ StateCompany is a fictional state domestic company with some state mission and a
 | Level | Role names | Permissions|
 | --- | --- | --- |
 | 1 | JustRegistered, Suspended | only to view Home and profile information pages |
-| 2 | BranchStaff | only to view contract/supplier/branch data, download reports to .xlsx file, view and download PDF copies of contract documents |
-| 3 | ContractStaff | to view, add, edit, delete contract/supplier/branch data, upload, view, download PDF copies of contract documents and download reports to .xlsx file |
-| 4 | Administrator | to approve user, assign roles, delete user, view and edit detailed user profile information, lockout and unlock user |
+| 2 | BranchStaff | only to view contract/supplier/branch/bank/city data, download reports to .xlsx file, view and download PDF copies of contract documents, send messages to administrator |
+| 3 | ContractStaff | to view, add, edit, delete contract/supplier/branch/bank/city data, upload, view, download PDF copies of contract documents and download reports to .xlsx file, send messages to administrator |
+| 4 | Administrator | to approve user, assign roles, delete user, view and edit detailed user profile information, lockout and unlock user, send messages to users |
 
 ### Data storage
 - separate users credentials storage (database);
-- centralized storage (database) of data about concluded contracts, suppliers, branches and another connected data;
+- centralized storage (database) of data about concluded contracts, suppliers, branches and another related data;
 - ability to create regular backups of storing data;
-- centralized repository for PDF copies of contract documents with a “Recycle Bin” for deleted documents;
+- centralized repository for PDF copies of contract documents with the ability to mark document as deleted;
 - database design defines separate tables for current type (status-current) and past type (statuses: fulfilled, terminated and invalid) contracts, it increases performance by reducing the data array to work with.
 
 ### Data access
@@ -65,13 +65,13 @@ StateCompany is a fictional state domestic company with some state mission and a
 | Entity | Filter property | Sort property|
 | --- | --- | --- |
 | Contract | Contract number, contract amount, contract conclusion and expiration date spans, supplier name or legal code, branch name or code, past contract status, is there contract litigation (court disputes) |conclusion date, contract amount, supplier name, branch name |
-| Supplier | Supplier name or legal code, supplier specialization, legal address, is there any negative remarks about the supplier | Supplier name, supplier specialization, legal address |
+| Supplier | Supplier name or legal code, supplier specialization, legal address, supplier bank or bank code, is there any negative remarks about the supplier | Supplier name, supplier specialization, legal address |
 | Branch | Branch name or code, postal address, head’s full name | Branch name, postal address, head’s full name |
 | Bank | Bank name or code | Bank name |
 | City | City name | City name |
 | User *(only for administrator role)* | Employee number, user full name, registration date, role, status of user account approval | Registration date, user full name, employee number |
 
-- to create and download reports as XLSX files from filtered contract/supplier/branch/bank/city data;
+- to create and download reports as XLSX files from filtered contract/supplier/branch data;
 - to upload, view and download PDF copies of contract documents;
 - to notify when contract expiration date is earlier than today's date and there is no contract litigation so a user should consider changing contract status from current to one of the past types: fulfilled, terminated or invalid.
 
@@ -86,7 +86,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 
 #### Deal#Rept restricts: 
 - from past contract data editing/deleting;
-- from current contract data deleting if it has uploaded documents;
+- from current contract data deleting if it has uploaded related documents;
 - from uploaded contract documents physical deleting (only marked as deleted);
 - from supplier/branch/bank/city data deleting if they have related contracts, suppliers or branches.
 These restrictions protect a database integrity.
