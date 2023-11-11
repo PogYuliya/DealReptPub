@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Contracts/Charts";
+}
+
+@section Header{
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xnluxl-justify-align-thin"></i> Contracts</a> <span class="lead align-middle text-nowrap">&sol; Contract Charts</span>
+    </div>
+}
+
+
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1">
+                            <a asp-action="Index"
+                               data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To contracts"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                            <button id="contractsChartButton" type="button" class="scaleIcon btn btn-link text-success p-0 mr-0"
+                                    data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Show charts">
+                                <span role="img" class="p-1 pb-2">
+                                    <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="errorMessage">
+            
+        </section>
+
+        @*Data for charts*@
+        <section id="chartData">
+            <div class="row">
+                <div class="col-md-12 px-1 p-md-0 mb-2">
+                    <div class="card bodyCreate card-body shadowBox c p-3">
+                        <form id="chartDataForm">
+                            <div class="form-row justify-content-around">
+                                <div class="custom-control custom-radio ml-3 mb-2 mb-md-0">
+                                    <input id="1" type="radio" checked name="monthesAgo" class="custom-control-input" value="3" />
+                                    <label class="custom-control-label" for="1">For the last 3 monthes</label>
+                                </div>
+                                <div class="custom-control custom-radio ml-3 mb-2 mb-md-0">
+                                    <input id="2" type="radio" name="monthesAgo" class="custom-control-input" value="6" />
+                                    <label class="custom-control-label" for="2">For the last 6 monthes</label>
+                                </div>
+                                <div class="custom-control custom-radio ml-3">
+                                    <input id="3" type="radio" name="monthesAgo" class="custom-control-input" value="12" />
+                                    <label class="custom-control-label" for="3">For the last 12 monthes</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        @*Charts*@
+        <section id="charts">
+            <div class="row">
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card card-body h-100 mr-lg-1 shadowBox py-0 pl-3">
+                            <div id="chartViewLeft">
+                                <div class="chart-container barChartContainer">
+                                    <canvas id="contractChartLeft"></canvas>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox py-0 pl-3">
+                        <div id="chartViewRight">
+                            <div class="chart-container barChartContainer">
+                                <canvas id="contractChartRight"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+

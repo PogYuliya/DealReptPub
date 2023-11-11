@@ -1,0 +1,175 @@
+﻿@inject IConfiguration Configuration
+@model UserViewModel
+
+@{
+    ViewBag.Title = "Users/Details";
+}
+
+@section Header{
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xtluxl-user-thin"></i> Users</a> <span class="lead align-middle text-nowrap">&sol; User Details</span>
+    </div>
+}
+
+<!-- Main -->
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-md-12 px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1">
+                            <a asp-action="Index"
+                               data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To users"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                            @if (Model.User.Email != Configuration["AdminConfiguration:Email"])
+                            {
+                                <a data-toggle="tooltip" data-placement="top" data-trigger="hover"
+                                   title="Edit the user" asp-action="Edit" asp-route-id="@Model.User.Id"
+                                   class="scaleIcon btn btn-link p-0 text-success mr-1">
+                                    <i class="fi-xnlux2-edit"></i>
+                                </a>
+                            }
+                            @if (Model.User.Email != Configuration["AdminConfiguration:Email"])
+                            {
+                                <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Delete the user">
+                                    <button type="button" data-toggle="modal"
+                                            data-backdrop="static"
+                                            data-entityName="@Model.User.UserFullName" data-entity="@Model.User.GetType().Name.ToString()"
+                                            data-id="@Model.User.Id" data-controller="Users"
+                                            data-entityCode="@Model.User.EmployeeNumber"
+                                            data-target="#modalDeleteEntity" class="scaleIcon btn btn-link text-warning p-0 mr-1">
+                                        <i class="fi-xnlux2-trash"></i>
+                                    </button>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Details*@
+        <section id="details">
+            <div class="row">
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5  px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.User.UserFullName):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.User.UserFullName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Email Address:</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                <a href="mailto:@Model.User.Email" class="text-primary d-block px-1 mb-md-2">
+                                    @Model.User.Email
+                                    <i class="fi-xnluxx-envelope-thin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Email Comfirmed?:</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @(Model.User.EmailConfirmed?"Yes":"No")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Account Is Approved?:</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @(Model.User.IsApproved?"Yes":"No")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    
+                    <div class="card h-100 card-body ml-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.User.EmployeeNumber):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.User.EmployeeNumber)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.User.Roles):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @String.Join(", ", Model.User.Roles)
+                            </div>
+                        </div>
+                        <div class=" row mb-0">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Lockout End (server UTC @Model.TimeZoneDifference):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @if (Model.User.LockoutEnd.HasValue)
+                                {
+                                    @Model.User.LockoutEnd.Value.DateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                                }
+                                @(Model.User.LockoutEnd>DateTimeOffset.Now.UtcDateTime.AddHours(Model.TimeZoneDifference) ? Html.Raw("<span class=\"text-warning\">(lockedout)</span>"): Html.Raw("<span class=\"text-success\">(Ok)</span>"))
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Failed Attemps:</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.User.AccessFailedCount)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.User.RegistrationDateUTC):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.User.RegistrationDateUTC)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col-md-12 px-1 px-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To users"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+
+@*Modals*@
+@{await Html.RenderPartialAsync("_ModalDeleteEntity");}
+
+
+
+
+

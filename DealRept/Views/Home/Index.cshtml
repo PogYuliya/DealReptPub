@@ -1,0 +1,245 @@
+﻿@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<!-- ACTIONS -->
+<section class="cards">
+    <form>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3 pr-md-0">
+                    @*Contract card*@
+                    <div class="card mx-md-3 mb-md-3 card-body bg-primary h-100 scaleBlueButton">
+                        <div class="card-title text-center">
+                            <a asp-controller="Contracts" asp-action="Index"
+                               class="btn btn-link text-white text-uppercase p-1 mb-3 orangeLinkHome">
+                                <h4 class="lead pr-2"><i class="fi-xnlux3-justify-align-thin"></i> Contracts</h4>
+                            </a>
+                        </div>
+                        <div class="card-text text-center whiteLink">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-controller="Contracts" asp-action="Create"
+                                       class="btn btn-link text-white scaleIconHome"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a contract">
+                                        <i class="fi-xtsux3-plus"></i>
+                                    </a>
+                                }
+
+                            }
+                            else
+                            {
+                                <a asp-controller="Contracts" asp-action="Create"
+                                   class="btn btn-link text-white scaleIconHome"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a contract">
+                                    <i class="fi-xtsux3-plus"></i>
+                                </a>
+                            }
+                            <a asp-controller="Contracts" asp-action="ShowCharts"
+                               class="scaleIconHome text-white btn btn-link mr-1 chartButton"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Show charts">
+                                <i class="fi-xnluh3-bar-chart-thin"></i>
+                            </a>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <button type="submit" formaction=@Url.Action("ExportHome", "Contracts") formmethod="get"
+                                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download a report as .xls file"
+                                        class="btn btn-link text-white  scaleIconHome whiteButton mr-1">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link scaleIconHome text-white whiteButton mr-1 enabledTooltipOnTouch"
+                                        data-toggle="tooltip" data-placement="top" title="Only signed in users can download a report">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                            <a asp-controller="Contracts" asp-action="Index"
+                               class="scaleIconHome btn btn-link text-white mr-1"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                               title="Show contracts with court disputes" asp-route-currentFilterCourtDispute="onlyWithCourtDisputes">
+                                <i class="fi-xnluh3-gavel-thin"></i>
+                            </a>
+                            <a asp-controller="Contracts" asp-action="Index"
+                               class=" scaleIconHome btn btn-link text-white mr-1"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                               title="Show past contracts" asp-route-currentFilterType="pastContracts">
+                                <i class="fi-xnlux3-archive-thin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 pl-md-0">
+                    @*Suppliers card*@
+                    <div class="h-100 card mx-md-3 mb-md-3 card-body bg-primary scaleBlueButton">
+                        <div class="card-title text-center">
+                            <a asp-controller="Suppliers" asp-action="Index"
+                            class="btn btn-link text-white text-uppercase orangeLinkHome p-1 mb-3">
+                                <h4 class="lead pr-2">
+                                    <i class="fi-xnluh3-handshake-thin"></i>
+                                    Suppliers
+                                </h4>
+                            </a>
+                        </div>
+                        <div class="card-text whiteLink text-center">
+                            @if (!SignInManager.IsSignedIn(User))
+                            {
+                                <a asp-controller="Suppliers" asp-action="Create"
+                                   class="btn btn-link text-white scaleIconHome"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a supplier">
+                                    <i class="fi-xtsux3-plus"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-controller="Suppliers" asp-action="Create"
+                                       class="btn btn-link text-white scaleIconHome"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a supplier">
+                                        <i class="fi-xtsux3-plus"></i>
+                                    </a>
+                                }
+                            }
+                            <a asp-controller="Suppliers" asp-action="ShowCharts"
+                               class="scaleIconHome text-white btn btn-link mr-1 chartButton"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Show charts">
+                                <i class="fi-xnluh3-bar-chart-thin"></i>
+                            </a>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <button type="submit" formaction=@Url.Action("Export", "Suppliers") formmethod="get"
+                                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download a report as .xls file"
+                                        class="btn btn-link text-white whiteButton  scaleIconHome mr-1">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link text-white scaleIconHome text-white whiteButton mr-1 enabledTooltipOnTouch"
+                                        data-toggle="tooltip" data-placement="top" title="Only signed in users can download a report">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                            <a asp-controller="Suppliers" asp-action="Index"
+                               class="scaleIconHome btn btn-link text-white mr-1"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                               title="Show suppliers without negative remarks" asp-route-currentFilterNegativeRemarks="excludeNegativeRemarks">
+                                <i class="fi-ctlux3-smiley-happy-thin"></i>
+                            </a>
+                            <a asp-controller="Suppliers" asp-action="Index"
+                               class=" scaleIconHome btn btn-link text-white mr-1"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                               title="Show suppliers with negative remarks" asp-route-currentFilterNegativeRemarks="onlyWithNegativeRemarks">
+                                <i class="fi-ctlux3-smiley-sad-thin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mt-md-3 mb-3 mb-md-5 pr-md-0">
+                    @*Branch card*@
+                    <div class="card mx-md-3 mb-md-3 card-body scaleBlueButton h-100 bg-primary">
+                        <div class="card-title text-center">
+                            <a asp-controller="Branches" asp-action="Index"
+                               class="btn btn-link text-white text-uppercase orangeLinkHome p-1 mb-3">
+                                <h4 class="lead pr-2"><i class="fi-xnlux3-data-structure-thin"></i> Branches</h4>
+                            </a>
+                        </div>
+                        <div class="card-text whiteLink text-center text-white">
+                            @if (!SignInManager.IsSignedIn(User))
+                            {
+                                <a asp-controller="Branches" asp-action="Create"
+                                   class="btn btn-link text-white scaleIconHome"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a branch">
+                                    <i class="fi-xtsux3-plus"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-controller="Branches" asp-action="Create"
+                                       class="btn btn-link text-white scaleIconHome"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a branch">
+                                        <i class="fi-xtsux3-plus"></i>
+                                    </a>
+                                }
+                            }
+                            <a asp-controller="Branches" asp-action="ShowCharts"
+                               class="scaleIconHome text-white btn btn-link mr-1 chartButton"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Show charts">
+                                <i class="fi-xnluh3-bar-chart-thin"></i>
+                            </a>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <button type="submit" formaction=@Url.Action("Export", "Branches") formmethod="get"
+                                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download a report as .xls file"
+                                        class="btn btn-link text-white whiteButton  scaleIconHome mr-1">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link scaleIconHome text-white whiteButton mr-1 enabledTooltipOnTouch"
+                                        data-toggle="tooltip" data-placement="top" title="Only signed in users can download a report">
+                                    <i class="fi-xtlux3-download-thin"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-md-3 mb-5 pl-md-0">
+                    @*Auxiliaries card*@
+                    <div class="h-100 card mx-md-3 mb-md-3 scaleBlueButton card-body bg-primary whiteLink">
+                        <div class="card-title text-center p-1 mb-4">
+                            <h4 class="lead text-white text-uppercase">
+                                <i class="fi-xtlux3-spreadsheet-thin"></i>
+                                Auxiliaries
+                            </h4>
+                        </div>
+                        <p class="card-text text-center">
+                            <a asp-controller="Banks" asp-action="Index"
+                               class="btn btn-link text-white scaleIconHome"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Show banks">
+                                <i class="fi-xtlux3-bank-thin"></i>
+                            </a>
+                            <a asp-controller="Cities" asp-action="Index"
+                               class="btn btn-link text-white scaleIconHome"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Show cities">
+                                <i class="fi-xtlux3-map-marker-thin"></i>
+                            </a>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a asp-controller="Account" asp-action="SendMessageToAdmins" asp-route-email="@User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value"
+                                   class="btn btn-link scaleIconHome text-white"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Send a message to an admin">
+                                    <i class="fi-xnlux3-headset-thin"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link scaleIconHome text-white whiteButton mr-1 enabledTooltipOnTouch"
+                                        data-toggle="tooltip" data-placement="top" title="Only signed in users can send a message to an admin">
+                                    <i class="fi-xnlux3-headset-thin"></i>
+                                </button>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+

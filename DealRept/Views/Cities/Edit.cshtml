@@ -1,0 +1,94 @@
+﻿@model City
+
+@{
+    ViewBag.Title = "Cities/Edit";
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xtluxl-map-marker-thin"></i> Cities</a> <span class="lead align-middle text-nowrap">&sol; Edit a City</span>
+    </div>
+}
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mx-auto px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col d-flex justify-content-center">
+                                <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To cities" class="dirtyLink">
+                                    <a asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                       class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                        <i class="fi-xnllx2-arrow-simple"></i>
+                                    </a>
+                                </span>
+                                <a asp-action="Edit" class="scaleIcon btn btn-link p-0 text-warning"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Discard changes">
+                                    <i class="fi-xnlux2-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Edit*@
+
+        <form asp-action="Edit" method="post" class="dirty-check font-weight-light">
+            <div asp-validation-summary="ModelOnly" class="px-1 px-lg-0 col-lg-4 col-md-6 mx-auto validationSummary text-justify">
+            </div>
+            <input hidden asp-for="ID" />
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mx-auto px-1 px-md-0 mb-2">
+                    <div class="card card-body shadowBox bodyCreate">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label asp-for="Name"></label>
+                                <input asp-for="Name" type="text" class="form-control pl-md-3">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mx-auto px-1 px-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header bg-white py-1">
+                                <div class="col d-flex justify-content-center">
+                                    <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To cities" class="dirtyLink">
+                                        <a asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                           class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                            <i class="fi-xnllx2-arrow-simple"></i>
+                                        </a>
+                                    </span>
+                                    <button type="submit" class="scaleIcon btn btn-link text-success p-0"
+                                            data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Save changes to the city">
+                                        <span role="img" class="p-1 pb-2">
+                                            <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+@*Modals*@
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Controller = "Cities", Action = "Index", Entity = "City" });}
+
+

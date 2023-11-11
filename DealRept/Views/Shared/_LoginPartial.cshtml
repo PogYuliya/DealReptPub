@@ -1,0 +1,43 @@
+﻿@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav ml-2 ml-lg-auto orangeButton">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item scaleNavItem">
+            <a role="link" class="nav-link mr-2 mr-lg-0 text-primary disabledTooltipOnMd" is-active-route asp-controller="Account"
+               asp-action="Details" data-toggle="tooltip" data-trigger="hover"
+               data-placement="top" title="Login details"><span>@User.Claims.FirstOrDefault(c => c.Type == "firstname").Value <i class="fi-xnluxl-user"></i></span></a>
+        </li>
+        <li class="nav-item scaleNavItem">
+            <form class="form-inline" asp-controller="Account"
+                  asp-action="Logout">
+                <button type="submit" is-active-route class="nav-link mr-2 mr-lg-0 btn btn-link btn-block text-left text-lg-center text-primary disabledTooltipOnMd"
+                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Logout">
+                    <i class="fi-xtluxl-sign-out-thin"></i>
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item scaleNavItem">
+            <a asp-controller="Account"
+               asp-action="Login" is-active-route
+               class="nav-link mr-2 mr-lg-0 text-primary disabledTooltipOnMd"
+               data-toggle="tooltip"
+               data-trigger="hover"
+               data-placement="top" title="Login">
+                <i class="fi-xtluxl-sign-in-thin"></i>
+            </a>
+        </li>
+        <li class="nav-item scaleNavItem">
+            <a is-active-route asp-controller="Account" asp-action="Register"
+               class="nav-link mr-2 mr-lg-0 text-primary disabledTooltipOnMd"
+               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Register">
+                <i class="fi-xtluxl-user-plus-thin"></i>
+            </a>
+        </li>
+    }
+</ul>
+
