@@ -51,7 +51,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 | 4 | Administrator | to approve user, assign roles, delete user, view and edit detailed user profile information, lockout and unlock user |
 
 ### Data storage
-- separate storage (database) of users credentials;
+- separate users credentials storage (database);
 - centralized storage (database) of data about concluded contracts, suppliers, branches and another connected data;
 - ability to create regular backups of storing data;
 - centralized repository for PDF copies of contract documents with a “Recycle Bin” for deleted documents;
