@@ -80,6 +80,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 - to add, edit and delete current contract/supplier/branch/bank/city data through respective pages;
 - to add related contracts through supplier and branch pages;
 - to add related suppliers and branches through bank and city pages;
+- to import (insert) cities and banks from .xlsx file;
 - to transfer contract from current type to past by changing contract status from current to one of the past types: fulfilled, terminated or invalid;
 - to check and notify about form changes when adding and editing data, this protects from losing unsaved data;
 - to validate data when adding or editing data by user (on the client and server sides), this protects a database integrity.
@@ -116,7 +117,6 @@ Deal#Rept is still in progress.
 
 ## Room for improvement
 ### Deal#Rept abilities (areas) for future development:
-- adding data through .xls or .csv file upload;
 - repository for supplier documents PDF copies;
 - printing out template documents;
 - etc.
