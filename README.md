@@ -46,7 +46,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 
 | Level | Role names | Permissions|
 | --- | --- | --- |
-| 1 | JustRegistered, Suspended | only to view Dashboard and profile information pages |
+| 1 | JustRegistered, Suspended | only to view Home and profile information pages |
 | 2 | BranchStaff | only to view contract/supplier/branch data, download reports to .xlsx file, view and download PDF copies of contract documents |
 | 3 | ContractStaff | to view, add, edit, delete contract/supplier/branch data, upload, view, download PDF copies of contract documents and download reports to .xlsx file |
 | 4 | Administrator | to approve user, assign roles, delete user, view and edit detailed user profile information, lockout and unlock user |
