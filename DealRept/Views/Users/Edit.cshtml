@@ -1,0 +1,196 @@
+﻿@inject IConfiguration Configuration
+@model UserViewModel
+
+@{
+    ViewBag.Title = "Users/Edit";
+
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xtluxl-user-thin"></i> Users</a> <span class="lead align-middle text-nowrap">&sol; Edit a User</span>
+    </div>
+}
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <form asp-action="Edit" method="post" class="dirty-check font-weight-light">
+            <section id="upperPanelButton">
+                <div class="row">
+                    <div class="col-md-12 px-1 px-md-0">
+                        <div class="card my-2">
+                            <div class="card-header d-flex justify-content-center bg-white py-1">
+                                <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To users" class="dirtyLink">
+                                    <a asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                       class="btn btn-link p-0 scaleIcon text-primary mr-1">
+                                        <i class="fi-xnllx2-arrow-simple"></i>
+                                    </a>
+                                </span>
+                                <a asp-action="Edit" asp-route-id="@Model.User.Id"
+                                   class="scaleIcon btn btn-link p-0 text-warning"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Discard changes">
+                                    <i class="fi-xnlux2-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @*Edit*@
+
+            <div asp-validation-summary="ModelOnly" class="text-justify validationSummary"></div>
+            <input hidden asp-for="User.Id" />
+            <div class="row">
+                <div class="col-lg-12 px-1 px-md-0 mb-2">
+                    <div class="card card-body shadowBox bodyCreate">
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group col-md-5  col-lg-3">
+                                <label asp-for="User.Email">Email Address</label>
+                                <input asp-for="User.Email" type="email" readonly class="form-control pl-md-3"
+                                       data-toggle="tooltip" data-placement="top" title="You can`t change an email">
+                                <span asp-validation-for="User.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3 col-lg-2">
+                                <label asp-for="@Model.User.EmployeeNumber"></label>
+                                <input asp-for="@Model.User.EmployeeNumber" type="text" readonly class="form-control pl-md-3"
+                                       data-toggle="tooltip" data-placement="top" title="You can`t change an employee number">
+                                <span asp-validation-for="User.EmployeeNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4 col-lg-2">
+                                <label asp-for="@Model.User.FirstName" class="font-weight-light"></label>
+                                <input asp-for="@Model.User.FirstName" type="text" class="form-control pl-md-3">
+                                <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4 col-lg-2">
+                                <label asp-for="@Model.User.MiddleName"></label>
+                                <input asp-for="@Model.User.MiddleName" type="text" class="form-control"
+                                       data-toggle="tooltip" data-placement="top" data-trigger="focus"
+                                       title="Please enter Middle Name, only if you have it">
+                                <span asp-validation-for="User.MiddleName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4 col-lg-3">
+                                <label asp-for="@Model.User.LastName"></label>
+                                <input asp-for="@Model.User.LastName" type="text" class="form-control">
+                                <span asp-validation-for="User.LastName" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox bodyCreate">
+                        <div class="form-row mb-md-0 mb-2">
+                            <div class="col-md-6">
+                                <fieldset>
+                                    <legend class="legend lead">
+                                        LockoutEnd (server UTC @Model.TimeZoneDifference)
+                                    </legend>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="LockoutEndDate.Date">Date</label>
+                                            <input asp-for="LockoutEndDate.Date" type="date"
+                                                   class="form-control p-2">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="LockoutEndDate.Time">Time</label>
+                                            <input asp-for="LockoutEndDate.Time" type="time" class="form-control p-2">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 text-center align-self-center">
+                                <div class="form-row mb-3">
+                                    <div class="custom-control custom-checkbox mx-auto">
+                                        <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="You can't change IsEmailConfirmed">
+                                            <input asp-for="User.EmailConfirmed" type="checkbox" class="custom-control-input" disabled />
+                                            <label class="custom-control-label text-white" asp-for="User.EmailConfirmed">Is Email Confirmed?</label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="custom-control custom-checkbox mx-auto">
+                                        <input type="checkbox" asp-for="User.EmailConfirmed" hidden />
+                                        <input asp-for="OldApproved" type="checkbox" hidden />
+                                        @if (Model.OldApproved)
+                                        {
+                                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="You can't change IsApproved">
+                                                <input asp-for="User.IsApproved" type="checkbox" class="custom-control-input" disabled />
+                                                <input asp-for="User.IsApproved" type="checkbox" hidden />
+
+                                                <label class="custom-control-label text-white" asp-for="User.IsApproved">Is Approved?</label>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="User.IsApproved" type="checkbox" class="custom-control-input" />
+                                            <label class="custom-control-label text-white" asp-for="User.IsApproved">Is Approved?</label>
+                                        }
+                                    </div>
+                                    <span class="text-danger text-right mb-3" asp-validation-for="User.IsApproved"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                @*Roles*@
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox bodyCreate">
+                        <fieldset>
+                            <legend class="legend lead">Roles</legend>
+                            <div class="form-row col-md-12 d-flex justify-content-between">
+                                @for (int i = 0; i < Model.AllRolesWithAssignment.Count; i++)
+                                {
+                                    <div class="custom-control custom-checkbox mr-4 mb-2">
+                                        <input type="checkbox" class="custom-control-input" asp-for="@Model.AllRolesWithAssignment[i].Assigned">
+                                        <label class="custom-control-label" asp-for="@Model.AllRolesWithAssignment[i].Assigned">@Model.AllRolesWithAssignment[i].RoleName</label>
+                                    </div>
+                                    <input hidden asp-for="AllRolesWithAssignment[i].RoleId" />
+                                    <input hidden asp-for="AllRolesWithAssignment[i].RoleName" />
+                                }
+                            </div>
+                            <span asp-validation-for="AllRolesWithAssignment" class="text-danger"></span>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row">
+                    <div class="col-md-12 px-1 px-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1">
+                                <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To users" class="dirtyLink">
+                                    <a asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                       class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                        <i class="fi-xnllx2-arrow-simple"></i>
+                                    </a>
+                                </span>
+                                <button type="submit"
+                                        asp-action="Edit" asp-controller="Users"
+                                        class="scaleIcon btn btn-link text-success p-0 mr-0"
+                                        data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Edit user">
+                                    <span role="img" class="p-1 pb-2">
+                                        <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+@*Modals*@
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Controller = "Users", Action = "Index", Entity = "User" });}
+
+

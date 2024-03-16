@@ -1,0 +1,95 @@
+﻿@model Branch
+
+<div id="detailsPDF">
+    <div class="infoContainer">
+        <div class="infoTitle">Brief Branch information</div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Name):
+            </div>
+            <div id="branchName" class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Code):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Code)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.BranchTelephone):
+            </div>
+            <div class="infoData infoColumnRight">
+                @PhoneFormatter.FormatPhNumber(Model.BranchTelephone, "")
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.BranchEmail):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Model.BranchEmail
+                <i class="fi-xnluxx-envelope-thin"></i>
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.PostalAddress):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.PostalAddress)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.CurrentContractCount):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.CurrentContractCount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.PastContractCount):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.PastContractCount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoSubTitle">
+                Head
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.HeadFullName):
+            </div>
+            <div class="infoData infoColumnRight text-primary">
+                @Html.DisplayFor(modelItem => Model.HeadFullName)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.HeadEmail):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Model.HeadEmail
+                <i class="fi-xnluxx-envelope-thin"></i>
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.HeadTelephone):
+            </div>
+            <div class="infoData infoColumnRight">
+                @PhoneFormatter.FormatPhNumber(Model.HeadTelephone, "")
+            </div>
+        </div>
+    </div>
+</div>
+

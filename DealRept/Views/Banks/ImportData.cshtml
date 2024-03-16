@@ -1,0 +1,99 @@
+﻿@model ImportFileViewModel
+@inject IConfiguration Configuration
+
+@{
+    ViewBag.Title = "Banks/Import Data";
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xtluxl-bank-thin"></i> Banks</a> <span class="lead align-middle text-nowrap">&sol; Import data</span>
+    </div>
+}
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mx-auto px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1 dirtyLink">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top"
+                               data-trigger="hover" title="To banks" data-target="#dirtyCheckModalIndex"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                            <a asp-action="DownloadTemplate" class="scaleIcon btn btn-link p-0 text-success"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download a template">
+                                <i class="fi-xnlux2-file-xlsx"></i>
+                            </a>
+                            <a asp-action="ImportData" class="scaleIcon btn btn-link p-0 text-warning"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Clear the form">
+                                <i class="fi-xnlux2-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Import data*@
+
+        <form asp-action="ImportData" class="dirty-check" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="col-md-6 col-lg-4 mx-auto px-1 p-md-0 text-justify validationSummary"></div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mx-auto px-1 p-md-0 mb-2">
+                    <div class="card card-body shadowBox bodyCreate">
+                        <div class="row">
+                            <div class="form-row custom-file m-3">
+                                <input id="the-file" type="file" accept=".xlsx"
+                                       asp-for="FileToUpload.FormFile" aria-describedby="fileHelpBlock" class="custom-file-input"
+                                       data-val="true" data-val-filesize-maxfilesize="@Configuration["ImportData:ImportFileSizeLimit"]"
+                                       data-val-filesize="File size can't be more than @(Int32.Parse(Configuration["ImportData:ImportFileSizeLimit"])/1000000)MB.">
+                                <label class="custom-file-label text-primary search"
+                                       asp-for="FileToUpload.FormFile">Choose a filled in template</label>
+                            </div>
+                            <div class="m-3">
+                                <small id="fileHelpBlock" class="form-text text-white-50">
+                                    You can only upload filled in templates with 100 cities batch limit and less than @(Int32.Parse(Configuration["ImportData:ImportFileSizeLimit"])/1000000) MB in file size.
+                                </small>
+                            </div>
+                            <div class="m-3 text-danger text-justify"><span asp-validation-for="FileToUpload.FormFile"></span>  </div>
+                            <div class="m-3 text-danger text-justify"><span asp-validation-for="FileToUpload"></span>  </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mx-auto px-1 p-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1 dirtyLink">
+                                <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover"
+                                   title="To banks" data-target="#dirtyCheckModalIndex"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                <button type="submit" class="scaleIcon btn btn-link text-success p-0 ml-1" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Import data">
+                                    <span role="img" class="p-1 pb-2">
+                                        <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+
+<!-- Modals -->
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Controller = "Contracts", Action = "Index", Entity = "Contract" });}

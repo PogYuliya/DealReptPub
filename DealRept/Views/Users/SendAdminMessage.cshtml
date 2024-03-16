@@ -1,0 +1,154 @@
+﻿@model AdminMessageViewModel
+@inject IConfiguration Configuration
+
+@{
+    ViewBag.Title = "Admin Message";
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="pb-1 px-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xtluxl-user-thin"></i> Users</a> <span class="lead align-middle text-nowrap">&sol; Admin Message</span>
+    </div>
+}
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-4 col-md-6 px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1">
+                            <span data-toggle="tooltip" data-placement="top" title="To users" data-trigger="hover" class="dirtyLink">
+                                <a asp-controller="Users" asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                            </span>
+                            <a asp-action="SendAdminMessage"
+                               class="scaleIcon btn btn-link p-0 text-warning mr-1"
+                               data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Clear the form">
+                                <i class="fi-xnlux2-times"></i>
+                            </a>
+                            <a href="#downPanelButton" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Down"
+                               class="btn btn-link p-0 scaleIcon text-primary">
+                                <i class="fi-xnldx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Send Admin Email*@
+
+
+        <form asp-action="SendAdminMessage" enctype="multipart/form-data"
+              method="post" class="dirty-check font-weight-light">
+
+            <div class="row d-flex justify-content-center">
+                <div asp-validation-summary="ModelOnly" class="px-1 px-lg-0 col-md-6 col-lg-4 text-justify
+                     validationSummary"></div>
+            </div>
+
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-4 col-md-6 px-1 px-md-0 mb-2">
+                    <div class="card card-body shadowBox bodyCreate">
+                        <fieldset class="mb-3">
+                            <legend class="legend lead">Roles Send To:</legend>
+                            <div class="form-row col-md-12 d-flex justify-content-between">
+                                @for (int i = 0; i < Model.Roles.Count; i++)
+                                {
+                                    <div class="custom-control custom-checkbox mr-4 mb-2">
+                                        <input type="checkbox" class="custom-control-input" asp-for="Roles[i].IsSendTo">
+                                        <label class="custom-control-label" asp-for="Roles[i].IsSendTo">@Model.Roles[i].RoleName</label>
+                                    </div>
+                                    <input hidden asp-for="Roles[i].RoleName" />
+                                }
+                            </div>
+                            <span asp-validation-for="Roles" class="text-danger"></span>
+                        </fieldset>
+                        <fieldset class="mb-3">
+                            <legend class="legend lead">
+Employees Send To:
+                            </legend>
+                            <div class="form-row">
+                                <div class="form-group col">
+                                    <label asp-for="EmployeeNumbersTo"></label>
+                                    <input asp-for="EmployeeNumbersTo" type="text" class="form-control enabledTooltipOnTouch" 
+                                           data-toggle="tooltip" data-trigger="focus" data-placement="top"
+                                           title="Enter employee number(s) separated by space or comma"/>
+                                    <span asp-validation-for="EmployeeNumbersTo"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label asp-for="Subject"></label>
+                                <input asp-for="Subject" type="text" class="form-control">
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label asp-for="Content"></label>
+                                <textarea asp-for="Content" class="form-control"></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <label asp-for="Attachment"></label>
+                            <div class="custom-file form-group">
+                                <input id="the-file" asp-for="Attachment" type="file" aria-describedby="fileHelpBlock" class="custom-file-input"
+                                        data-val="true" data-val-filesize-maxfilesize="@Configuration["EmailAttachmentSizeLimit"]"
+                                       data-val-filesize="Attachment file size can't be more than @(Int32.Parse(Configuration["EmailAttachmentSizeLimit"])/1000000)MB.">
+                                <label asp-for="Attachment" class="custom-file-label text-primary attachment">Choose an Attachment</label>
+                            </div>
+                            <span asp-validation-for="Attachment" class="text-danger"></span>
+                            <div class="form-row ml-3">
+                                <small id="fileHelpBlock" class="form-text text-muted text-white-50">
+                                    You can only attach one file less than 2 MB in size. Executable extensions are not allowed (.exe, .js., etc.).
+                                </small>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-4 col-md-6 px-1 px-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header bg-white py-1">
+                                <div class="col d-flex justify-content-center">
+                                    <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To users" class="dirtyLink">
+                                        <a asp-controller="Users" asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                           class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                            <i class="fi-xnllx2-arrow-simple"></i>
+                                        </a>
+                                    </span>
+                                    <button type="submit" class="scaleIcon btn btn-link text-success p-0 mr-0"
+                                            data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Send">
+                                        <span role="img" class="p-1 pb-2">
+                                            <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <a href="#upperPanelButton" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Up"
+                                       class="scaleIcon btn btn-link p-0 text-primary ml-1">
+                                        <i class="fi-xwlux2-arrow-simple"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+<!-- Modals -->
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Action = "Index", Entity = "Message" });}
+
+

@@ -1,0 +1,64 @@
+﻿@model StatusCodeViewModel
+@{
+    ViewData["Title"] = $"Status Code {Model.ErrorStatusCode}";
+}
+
+@section Header{
+    <div class="text-warning"><i class="fi-ctluxl-warning-thin"></i> Error @Model.ErrorStatusCode</div>
+}
+
+<section id="error">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-8 mx-auto my-5 px-1">
+                <div class="card p-4 card-body bg-primary scaleBlueButton">
+                    <div class="card-title text-center">
+                        <h2 class="text-warning lead font-weight-normal">An error occurred while processing your request!</h2>
+                    </div>
+                    <div class="card-text text-white">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <h3 class="lead text-justify px-1">
+                                    @Model.ErrorMessage
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <h3 class="lead px-1">
+                                    Status Code: <span class="text-warning display-4">
+                                        @Model.ErrorStatusCode
+                                </span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        @if (Model.ShowOriginalURL)
+                        {
+                            <div class="col">
+                                <a class="text-white d-block orangeLinkHome" href="@Model.OriginalURL">
+                                    <h3 class="lead p-1">
+                                        Referrer: @Model.OriginalURL
+                                    </h3>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="row mb-2">
+                        @if (Model.ShowRequestId)
+                        {
+                            <div class="col-12">
+                                <div class="px-1">
+                                    Request ID:
+                                    @Model.RequestId
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>

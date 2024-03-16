@@ -1,0 +1,153 @@
+﻿@model Supplier
+
+<div id="detailsPDF">
+    <div class="infoContainer">
+        <div class="infoTitle">Brief Supplier information</div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Name):
+            </div>
+            <div id="supplierName" class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft ">
+                @Html.DisplayNameFor(modelItem => Model.LegalCode):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.LegalCode)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.LegalAddress):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.LegalAddress)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Specialization):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Specialization.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.DirectorFullName):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.DirectorFullName)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.CompanyTelephone):
+            </div>
+            <div class="infoData infoColumnRight">
+                @PhoneFormatter.FormatPhNumber(Model.CompanyTelephone, "")
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.CompanyEmail):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Model.CompanyEmail
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.NegativeRemarks):
+            </div>
+            <div class="infoData infoColumnRight">
+                @(Model.NegativeRemarks != null
+                    ? Html.Raw($"<span class=\"infoWarning\">{Model.NegativeRemarks}</span>")
+                    : Html.Raw("<span>Supplier doesn`t have negative remarks</span>")
+                    )
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.CurrentContractCount):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelitem => modelitem.CurrentContractCount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.PastContractCount):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelitem => modelitem.PastContractCount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoSubTitle">
+                Banking Details
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.BankAccount):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.BankAccount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Bank.Name):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Bank.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Bank.Code):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Bank.Code)
+            </div>
+        </div>
+        @if (Model.ContactFirstName != null || Model.ContactLastName != null
+          || Model.ContactMiddleName != null || Model.ContactTelephone != null || Model.ContactEmail != null)
+        {
+            <div class="infoRow">
+                <div class="infoSubTitle">
+                    Contact Person
+                </div>
+            </div>
+            <div class="infoRow">
+                <div class="infoLabel infoColumnLeft">
+                    @Html.DisplayNameFor(modelItem => Model.ContactFullName):
+                </div>
+                <div class="infoData infoColumnRight">
+                    @Html.DisplayFor(modelItem => Model.ContactFullName)
+                </div>
+            </div>
+            <div class="infoRow">
+                <div class="infoLabel infoColumnLeft">
+                    @Html.DisplayNameFor(modelItem => Model.ContactEmail):
+                </div>
+                <div class="infoData infoColumnRight">
+                    @Model.ContactEmail
+                </div>
+            </div>
+            <div class="infoRow">
+                <div class="infoLabel infoColumnLeft">
+                    @Html.DisplayNameFor(modelItem => Model.ContactTelephone):
+                </div>
+                <div class="infoData infoColumnRight">
+                    @(Model.ContactTelephone != null ? PhoneFormatter.FormatPhNumber(Model.ContactTelephone, "") : null)
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

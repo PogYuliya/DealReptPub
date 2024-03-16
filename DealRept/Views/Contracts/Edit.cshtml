@@ -1,0 +1,288 @@
+﻿@model ContractViewModel
+
+@{
+    ViewBag.Title = "Contracts/Edit";
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xnluxl-justify-align-thin"></i> Contracts</a> <span class="text-primary text-nowrap lead align-middle">&sol; Edit a Contract</span>
+    </div>
+}
+
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-md-12 px-1 px-md-0">
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1">
+                            <span class="dirtyLink" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="To contracts">
+                                <a asp-action="Index" data-target="#dirtyCheckModalIndex" class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                            </span>
+                            <a asp-action="Edit" class="btn btn-link p-0 scaleIcon text-warning mr-1"
+                               data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Discard changes">
+                                <i class="fi-xnlux2-times"></i>
+                            </a>
+                            <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a document to the contract" class="dirtyLink">
+                                <a id="dirty" asp-action="CreateCurrentDocument" data-target="#dirtyCheckModalCreateDocument" asp-route-id="@Model.Contract.ID"
+                                   class="btn btn-link p-0 scaleIcon text-primary mr-1">
+                                    <i class="fi-xtlux2-file"></i>
+                                </a>
+                            </span>
+                            <a href="#downPanelButton" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="Down"
+                               class="scaleIcon btn btn-link p-0 scaleIcon text-primary">
+                                <i class="fi-xnldx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Edit*@
+
+        <form asp-action="Edit" method="post" class="dirty-check font-weight-light">
+            <div asp-validation-summary="ModelOnly" class="text-justify validationSummary"></div>
+            <input type="hidden" asp-for="Contract.ID" />
+            <div class="row">
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox bodyCreate">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.ContractNumber"></label>
+                                <input asp-for="Contract.ContractNumber" type="text" readonly
+                                       class="form-control pl-md-3 enabledTooltipOnTouch"
+                                       data-toggle="tooltip" data-placement="top" title="You can`t change contract number">
+                                <span asp-validation-for="Contract.ContractNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.ContractAmount">Amount (UAH):</label>
+                                <input asp-for="Contract.ContractAmount" type="text"
+                                       class="form-control" id="inputAmount">
+                                <span asp-validation-for="Contract.ContractAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.ConclusionDate"></label>
+                                <input asp-for="Contract.ConclusionDate" readonly type="date"
+                                       class="form-control pl-md-3 enabledTooltipOnTouch"
+                                       data-toggle="tooltip" data-placement="top" title="You can`t change conclusion date">
+                                <span asp-validation-for="Contract.ConclusionDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.ExpirationDate"></label>
+                                <input asp-for="Contract.ExpirationDate" type="date"
+                                 min="@Model.Contract.ConclusionDate.AddDays(1).ToString("yyyy-MM-dd")"      
+                                       class="form-control pl-md-3">
+                                <span asp-validation-for="Contract.ExpirationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row mb-md-0 mb-2">
+                            <div class="col-md-12 text-center">
+                                <div class="custom-control custom-checkbox enabledTooltipOnTouch" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="It is changed automaticaly when your change termination date">
+                                    <input type="checkbox" class="custom-control-input" disabled asp-for="Contract.IsProlonged">
+                                    <label class="custom-control-label text-white" asp-for="Contract.IsProlonged">Is prolonged?</label>
+                                    <input hidden asp-for="Contract.IsProlonged" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label asp-for="Contract.Subject"></label>
+                                <textarea asp-for="Contract.Subject" class="form-control text-justify">Enter Subject</textarea>
+                                <span asp-validation-for="Contract.Subject" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox bodyCreate">
+                        <div class="form-row align-items-center">
+                            <div class="col-md-6 mt-4 mb-4 text-center @*text-md-left*@">
+                                <div class="custom-control custom-control-inline custom-radio mr-4">
+                                    @Html.RadioButtonFor(model => model.Contract.IsGoods, true, htmlAttributes: new { @class = "custom-control-input", @id = "1", @value = "@Model.Contract.IsGoods" })
+                                    <label class="custom-control-label" for="1">Goods</label>
+                                </div>
+                                <div class="custom-control custom-control-inline custom-radio ml-3">
+                                    @Html.RadioButtonFor(model => model.Contract.IsGoods, false, htmlAttributes: new { @class = "custom-control-input", @id = "2", @value = "@Model.Contract.IsGoods" })
+                                    <label class="custom-control-label" for="2">Service</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.ContractStatusID"></label>
+                                <select style="width:100%;" id="contractStatusSelect"
+                                        asp-for="Contract.ContractStatusID"
+                                        asp-items="@Model.ContractStatuses"
+                                        class="form-control text-primary">
+                                </select>
+                                <span asp-validation-for="Contract.ContractStatusID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.SupplierID"></label>
+                                <select style="width:100%;" id="supplierLCodeSelect"
+                                        asp-for="Contract.SupplierID"
+                                        asp-items="@Model.Suppliers"
+                                        class="form-control text-primary">
+                                </select>
+                                <span asp-validation-for="Contract.SupplierID" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Contract.BranchID"></label>
+                                <select style="width:100%;" id="branchCodeSelect"
+                                        asp-for="Contract.BranchID"
+                                        asp-items="@Model.Branches"
+                                        class="form-control text-primary">
+                                </select>
+                                <span asp-validation-for="Contract.BranchID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row mb-md-0 mb-2">
+                            <div class="col-md-12 text-center">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" asp-for="Contract.IsCourtDispute">
+                                    <label class="custom-control-label text-white" asp-for="Contract.IsCourtDispute">Court Dispute</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label asp-for="Contract.Remarks"></label>
+                                <textarea asp-for="Contract.Remarks" class="form-control text-justify">Enter Remarks</textarea>
+                                <span asp-validation-for="Contract.Remarks" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Document Card*@
+            <section id="documentCard">
+                <div class="row px-1 px-md-0">
+                    <div class="card card-body p-4 mb-2 shadowBox">
+                        <div class="row flex-nowrap">
+                            <div class="col-6 px-1 px-md-3 whiteLink">
+                                <h4>
+                                    @if (Model.CurrentDocumentsToEdit.Any())
+                                    {
+                                        <a class="scaleBlueButton badge font-weight-light bodyCreate px-1 py-2 p-md-2 dropdown-toggle"
+                                           data-toggle="collapse" href="#collapseDocuments" role="button" aria-expanded="false" style="width: 100%;">
+                                            @Model.CurrentDocumentsToEdit.Count() Documents
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge font-weight-light bodyCreate px-1 py-2 p-md-2"
+                                              style="width: 100%;">
+                                            0 Documents
+                                        </span>
+                                    }
+                                </h4>
+                            </div>
+                            <div class="col-4 col-md-3 px-1 px-md-3">
+                                <h4><span class="badge font-weight-light bodyCreate px-1 py-2 p-md-2" style="width: 100%;">Upload Date</span></h4>
+                            </div>
+                            <div class="col-2 col-md-3 px-1 px-md-3">
+                                <h4><span class="badge font-weight-light bodyCreate px-1 py-2 p-md-2" style="width: 100%;">Delete</span></h4>
+                            </div>
+                        </div>
+                        <div id="collapseDocuments" class="collapse @((Model.CurrentDocumentsToEdit.Any(d=>d.IsMarkedToDelete==true))?"show":"")">
+
+                            @for (int i = 0; i < Model.CurrentDocumentsToEdit.Count(); i++)
+                            {
+                                <div class="row flex-nowrap">
+                                    <div class="col-6 text-primary px-1 px-md-3 py-2 py-md-1 text-center text-md-left orangeLink">
+                                        <a class="px-1 p-md-1 d-block" target="_blank"
+                                           asp-action="OpenDocument" asp-route-id="@Model.CurrentDocumentsToEdit[i]?.ID"
+                                           asp-route-contractStatus="@Model.Contract?.ContractStatus?.Name">
+                                            @if (Model.CurrentDocumentsToEdit[i].IsDeleted)
+                                            {
+                                                <del>@Html.DisplayFor(modelItem => Model.CurrentDocumentsToEdit[i].Name)</del>
+
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => Model.CurrentDocumentsToEdit[i].Name)
+                                            }
+                                        </a>
+                                    </div>
+                                    <div class="col-4 col-md-3 px-1 px-md-3 text-primary py-2 text-center">
+                                        @Html.DisplayFor(modelItem => Model.CurrentDocumentsToEdit[i].DateOfUploading)
+                                    </div>
+                                    <div class="col-2 col-md-3 text-primary d-flex justify-content-center">
+                                        @if (Model.CurrentDocumentsToEdit[i].IsDeleted)
+                                        {
+                                        <span class="text-secondary display-4 align-self-baseline">&times;</span>
+                                        }
+                                        else
+                                        {
+                                            <label class="main">
+                                                <input type="checkbox"
+                                                       asp-for="CurrentDocumentsToEdit[i].IsMarkedToDelete" />
+                                                <span class="geekmark"></span>
+                                            </label>
+                                        }
+
+                                        <input hidden asp-for="CurrentDocumentsToEdit[i].ID" />
+                                        <input hidden asp-for="CurrentDocumentsToEdit[i].Name" />
+                                        <input hidden asp-for="CurrentDocumentsToEdit[i].IsDeleted" />
+                                        <input hidden asp-for="CurrentDocumentsToEdit[i].PathToDocument" />
+                                        <input hidden asp-for="CurrentDocumentsToEdit[i].DateOfUploading" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row">
+                    <div class="col-md-12 px-1 px-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1">
+                                <span class="dirtyLink" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="To contracts">
+                                    <a asp-action="Index" data-target="#dirtyCheckModalIndex"
+                                       class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                        <i class="fi-xnllx2-arrow-simple"></i>
+                                    </a>
+                                </span>
+                                <button type="submit" class="scaleIcon btn btn-link text-success p-0 m-0"
+                                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Save changes to the contract">
+                                    <span role="img" class="p-1 pb-2">
+                                        <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </button>
+                                <a href="#upperPanelButton" data-toggle="tooltip"
+                                   data-trigger="hover" data-placement="top" title="Up" class="scaleIcon btn btn-link p-0 text-primary ml-1">
+                                    <i class="fi-xwlux2-arrow-simple"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+<!-- Modals -->
+
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Controller = "Contracts", Action = "Index", Entity = "Contract" });}
+
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalCreateDocument", Controller = "Contracts", Action = "CreateCurrentDocument", RouteData = @Model.Contract.ID, Entity = "Contract" });}
+
+
+
+

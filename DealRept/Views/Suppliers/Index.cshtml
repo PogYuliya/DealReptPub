@@ -1,0 +1,282 @@
+﻿@model PaginatedList<Supplier>
+
+@{
+    ViewBag.Title = "Suppliers";
+}
+
+@section Header{
+    <i class="fi-xnluhl-handshake-thin"></i> Suppliers
+}
+
+
+<section id="main">
+    <div class="container">
+        <form asp-action="Index" method="get">
+            <!--ButtonPanel-->
+            <div class="row">
+                <div class="col-12 px-1">
+                    <div id="buttonPanel" class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col-12 d-flex flex-nowrap justify-content-center">
+                                <button type="submit" formaction=@Url.Action("Index", "Suppliers") formmethod="get" class="scaleIcon btn btn-link text-success p-0 mr-1"
+                                        data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Filter suppliers">
+                                    <i class="fi-xtlux2-funnel"></i>
+                                </button>
+                                <a asp-action="Index" class="scaleIcon btn btn-link p-0 text-primary mr-1"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Reset filters">
+                                    <i class="fi-xnpuh2-funnel"></i>
+                                </a>
+                                <button type="submit" formaction=@Url.Action("Export", "Suppliers") formmethod="get"
+                                        class="scaleIcon btn btn-link text-success p-0 mr-1"
+                                        data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download a report to Excell">
+                                    <i class="fi-xtlux2-download"></i>
+                                </button>
+                                <a asp-action="ShowCharts" class="scaleIcon btn btn-link p-0 text-primary mr-1 chartButton" data-toggle="tooltip"
+                                   data-trigger="hover" data-placement="top" title="Show charts">
+                                    <i class="fi-xnluh2-bar-chart"></i>
+                                </a>
+                                @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-action="Create" class="scaleIcon btn btn-link p-0 text-warning mr-1"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a new supplier"> <i class="fi-xtlux2-plus"></i></a>
+                                }
+                                <div class="dropdown show align-self-center">
+                                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="scaleIcon btn btn-link p-0 text-primary" asp-action="Index" role="button" id="dropdownMenuLink" data-toggle="tooltip" data-placement="top"
+                                                data-trigger="hover" title="Sort records">
+                                            <i class="fi-xnlux2-sort"></i>
+                                        </button>
+                                    </span>
+                                    <div class="dropdown-menu p-md-1 mt-3 dropDownLink" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item text-primary mb-md-1
+                                           @((Model.SortModel.CurrentSort=="Name_desc"||String.IsNullOrEmpty(Model.SortModel.CurrentSort)?"active":""))"
+                                           asp-action="Index" asp-route-sortOrder="@Model.SortModel.NameSortParm"
+                                           asp-route-currentFilterSupplierNameCode="@Model.SearchModel.NameCodeSupplierSearch"
+                                           asp-route-currentFilterLegalAddress="@Model.SearchModel.LegalAddressSearch"
+                                           asp-route-currentFilterNegativeRemarks="@Model.SearchModel.NegativeRemarksSearch"
+                                           asp-route-currentFilterSpecialization="@Model.SearchModel.SpecializationSearch"
+                                           asp-route-currentFilterBankNameCode="@Model.SearchModel.NameCodeBankSearch">
+                                            Supplier Name@(String.IsNullOrEmpty(Model.SortModel.CurrentSort)|| Model.SortModel.CurrentSort=="Name_desc" ? (String.IsNullOrEmpty(Model.SortModel.NameSortParm) ? @Html.Raw("&#x25be;") : @Html.Raw("&#x25b4;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                        <a class="dropdown-item text-primary mb-md-1
+                                           @((Model.SortModel.CurrentSort=="Specialization"||Model.SortModel.CurrentSort=="Specialization_desc"?"active":""))"
+                                           asp-action="Index" asp-route-sortOrder="@Model.SortModel.SpecializationSortParm"
+                                           asp-route-currentFilterSupplierNameCode="@Model.SearchModel.NameCodeSupplierSearch"
+                                           asp-route-currentFilterLegalAddress="@Model.SearchModel.LegalAddressSearch"
+                                           asp-route-currentFilterNegativeRemarks="@Model.SearchModel.NegativeRemarksSearch"
+                                           asp-route-currentFilterSpecialization="@Model.SearchModel.SpecializationSearch"
+                                           asp-route-currentFilterBankNameCode="@Model.SearchModel.NameCodeBankSearch">
+                                            Supplier Specialization@(Model.SortModel.CurrentSort== "Specialization" || Model.SortModel.CurrentSort== "Specialization_desc" ? (Model.SortModel.CurrentSort== "Specialization" ? @Html.Raw("&#x25b4;") : @Html.Raw("&#x25be;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                        <a class="dropdown-item text-primary
+                                           @((Model.SortModel.CurrentSort=="LegalAddress"||Model.SortModel.CurrentSort=="LegalAddress_desc"?"active":""))"
+                                           asp-action="Index" asp-route-sortOrder="@Model.SortModel.LegalAddressSortParm"
+                                           asp-route-currentFilterSupplierNameCode="@Model.SearchModel.NameCodeSupplierSearch"
+                                           asp-route-currentFilterLegalAddress="@Model.SearchModel.LegalAddressSearch"
+                                           asp-route-currentFilterNegativeRemarks="@Model.SearchModel.NegativeRemarksSearch"
+                                           asp-route-currentFilterSpecialization="@Model.SearchModel.SpecializationSearch"
+                                           asp-route-currentFilterBankNameCode="@Model.SearchModel.NameCodeBankSearch">
+                                            Legal Address@(Model.SortModel.CurrentSort=="LegalAddress"|| Model.SortModel.CurrentSort=="LegalAddress_desc" ? (Model.SortModel.CurrentSort=="LegalAddress" ? @Html.Raw("&#x25b4;") : @Html.Raw("&#x25be;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Filters -->
+                <div id="filters" class="col-lg-3 px-1 mb-md-2">
+                    <div class="card bodyCreate p-3">
+                        <div class="form-row justify-content-md-around mb-4">
+                            <div class="col text-md-center text-lg-left"><div class="ml-3">@Html.DisplayFor(model => model.CountRecords) records were found</div></div>
+                        </div>
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group text-md-center text-lg-left col-md-5 col-lg-12 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.NameCodeSupplierSearch">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputSupplier" role="button" aria-expanded="false">Supplier Name or LC</a>
+                                </label>
+                                <input id="collapseInputSupplier" type="text" asp-for="SearchModel.NameCodeSupplierSearch" value="@Model.SearchModel.NameCodeSupplierSearch" class="form-control text-primary collapse @((Model.SearchModel.NameCodeSupplierSearch!=null)?"show":"")" placeholder="All">
+                            </div>
+                            <div class="form-group text-md-center text-lg-left col-md-5 col-lg-12 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.SpecializationSearch">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputSpecialization" role="button" aria-expanded="false">Supplier Specialization</a>
+                                </label>
+                                <input id="collapseInputSpecialization" type="text" asp-for="SearchModel.SpecializationSearch" value="@Model.SearchModel.SpecializationSearch" class="form-control text-primary collapse @((Model.SearchModel.SpecializationSearch!=null)?"show":"")" placeholder="All">
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group text-md-center text-lg-left col-md-5 col-lg-12 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.LegalAddressSearch"><a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputLegalAddress" role="button" aria-expanded="false">Legal Address</a></label>
+                                <input id="collapseInputLegalAddress" type="text" asp-for="SearchModel.LegalAddressSearch" value="@Model.SearchModel.LegalAddressSearch" class="form-control text-primary collapse  @((Model.SearchModel.LegalAddressSearch!=null)?"show":"")" placeholder="All">
+                            </div>
+                            <div class="form-group text-md-center text-lg-left col-md-5 col-lg-12 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.NameCodeBankSearch"><a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputBank" role="button" aria-expanded="false">Bank Name or Code</a></label>
+                                <input id="collapseInputBank" type="text" asp-for="SearchModel.NameCodeBankSearch" value="@Model.SearchModel.NameCodeBankSearch" class="form-control text-primary collapse  @((Model.SearchModel.NameCodeBankSearch!=null)?"show":"")" placeholder="All">
+                            </div>
+                        </div>
+                        <fieldset>
+                            <legend class="whiteLink text-md-center text-lg-left">
+                                <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseRadioNegative" role="button" aria-expanded="false">Negative Remarks</a>
+                            </legend>
+                            <div class="collapse @((Model.SearchModel.NegativeRemarksSearch!="includeNegativeRemarks")?"show":"")" id="collapseRadioNegative">
+                                <div class="form-row justify-content-start justify-content-md-around justify-content-lg-start">
+                                    <div class="mb-4 custom-control custom-radio custom-control-inline ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.NegativeRemarksSearch, "includeNegativeRemarks", htmlAttributes: new { @class = "custom-control-input", @id = "1", @value = "@Model.SearchModel.NegativeRemarksSearch" })
+                                        <label class="custom-control-label" for="1">Including with nagative remarks</label>
+                                    </div>
+                                    <div class="mb-4 custom-control custom-radio custom-control-inline ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.NegativeRemarksSearch, "onlyWithNegativeRemarks", htmlAttributes: new { @class = "custom-control-input", @id = "2", @value = "@Model.SearchModel.NegativeRemarksSearch" })
+                                        <label class="custom-control-label" for="2">Only with nagative remarks</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.NegativeRemarksSearch, "excludeNegativeRemarks", htmlAttributes: new { @class = "custom-control-input", @id = "3", @value = "@Model.SearchModel.NegativeRemarksSearch" })
+                                        <label class="custom-control-label" for="3">Excluding with nagative remarks</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <!--Suppliers-->
+                <div class="col-lg-9 px-1 mt-2 mt-md-0">
+                    <div class="d-flex flex-column">
+                        @foreach (var supplier in Model)
+                        {
+                            <div class="card text-primary card-body shadowBox px-3 pt-3 pb-1 mb-2">
+                                <div class="row">
+                                    <div class="col-md-6 text-justify orangeLink">
+                                        <a class="px-1 mb-2 mb-md-3 d-block lead font-weight-bold"
+                                           asp-action="Details" asp-route-id="@supplier.ID">@Html.DisplayFor(modelItem => supplier.Name)</a>
+                                        <div class="px-1 mb-2 text-justify">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => supplier.LegalCode):</span>
+                                            @Html.DisplayFor(modelItem => supplier.LegalCode)
+                                        </div>
+                                        <div class="px-1 mb-2 text-justify">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => supplier.LegalAddress):</span>
+                                            @Html.DisplayFor(modelItem => supplier.LegalAddress)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-sm-12 px-3 text-center mb-2 mb-md-3 whiteLink">
+                                            <h4>
+                                                @if (supplier.CurrentContractCount != 0 || supplier.PastContractCount != 0)
+                                                {
+                                                    <a asp-controller="Contracts" asp-action="Index" asp-route-currentFilterSupplier="@supplier.LegalCode"
+                                                       class="scaleBlueButton badge font-weight-light bodyCreate p-2 text-uppercase" style="width: 100%;">@(supplier.CurrentContractCount+supplier.PastContractCount) contracts</a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge font-weight-light bodyCreate p-2 text-uppercase" style="width: 100%;">@(supplier.CurrentContractCount+supplier.PastContractCount) contracts</span>
+                                                }
+                                            </h4>
+                                        </div>
+                                        <div class="col-sm-12 px-1 mb-1 text-justify orangeLink">
+                                            @if (supplier.NegativeRemarks != null)
+                                            {
+                                                <span class="text-warning">
+                                                    <i class="fi-ctluxx-smiley-sad-thin"></i>
+                                                    Supplier has negative remarks
+                                                    <a tabindex="0" class="btn btn-link text-muted p-0 px-1 mb-1" role="button" data-toggle="popover" data-trigger="focus" data-content="@supplier.NegativeRemarks)">... More</a>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-success">
+                                                    <i class="fi-ctluxx-smiley-happy-thin"></i>
+                                                    Supplier doesn`t have negative remarks
+                                                </span>
+                                            }
+                                        </div>
+                                        <div class="col-sm-12 px-1 mb-1 text-justify orangeLink">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => supplier.Specialization):</span>
+                                            @if (supplier.Specialization.Name.Length > 60)
+                                            {
+                                                @supplier.Specialization.Name.Substring(0, 60)
+
+                                                <a tabindex="0" class="btn btn-link text-muted p-0 px-1 mb-1" role="button" data-toggle="popover" data-trigger="focus" data-content="@supplier.Specialization.Name">... More</a>
+                                            }
+                                            else
+                                            {
+                                                @supplier.Specialization.Name
+                                            }
+
+                                        </div>
+                                        <div class="orangeLink">
+                                            <a class="d-block px-1 mb-2 text-justify" asp-controller="Banks" asp-action="Index" asp-route-currentFilterNameCode="@supplier.Bank.Code">
+                                                <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => supplier.Bank):</span>
+                                                @Html.DisplayFor(modelItem => supplier.Bank.Name)
+                                                (@Html.DisplayFor(modelItem => supplier.Bank.Code)) <i class="fi-ctluxx-info"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                    </div>
+                    <!-- PAGINATION -->
+                    @{
+                        string prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+
+                    <div class="row justify-content-center mb-4">
+                        <nav class="ml-3">
+                            <ul class="pagination pagination-sm">
+                                <li class="page-item @prevDisabled">
+                                    <a asp-action="Index"
+                                       asp-route-pageNumber="@(Model.PageIndex-1)" asp-route-sortOrder="@Model.SortModel.CurrentSort"
+                                       asp-route-currentFilterSupplierNameCode="@Model.SearchModel.NameCodeSupplierSearch"
+                                       asp-route-currentFilterLegalAddress="@Model.SearchModel.LegalAddressSearch"
+                                       asp-route-currentFilterNegativeRemarks="@Model.SearchModel.NegativeRemarksSearch"
+                                       asp-route-currentFilterSpecialization="@Model.SearchModel.SpecializationSearch"
+                                       asp-route-currentFilterBankNameCode="@Model.SearchModel.NameCodeBankSearch"
+                                       class="page-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="@(i==Model.PageIndex ? "page-item active":"page-item")">
+                                        <a class="page-link" href="@Url.Action("Index",new {pageNumber=i, sortOrder=Model.SortModel.CurrentSort,
+                                                                    currentFilterSupplierNameCode=Model.SearchModel.NameCodeSupplierSearch,
+                                       currentFilterLegalAddress=Model.SearchModel.LegalAddressSearch,
+                                       currentFilterNegativeRemarks=Model.SearchModel.NegativeRemarksSearch,
+                                       currentFilterSpecialization=Model.SearchModel.SpecializationSearch,
+                                       currentFilterBankNameCode=Model.SearchModel.NameCodeBankSearch})">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                                <li class="page-item  @nextDisabled">
+                                    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" asp-route-sortOrder="@Model.SortModel.CurrentSort"
+                                       asp-route-currentFilterSupplierNameCode="@Model.SearchModel.NameCodeSupplierSearch"
+                                       asp-route-currentFilterLegalAddress="@Model.SearchModel.LegalAddressSearch"
+                                       asp-route-currentFilterNegativeRemarks="@Model.SearchModel.NegativeRemarksSearch"
+                                       asp-route-currentFilterSpecialization="@Model.SearchModel.SpecializationSearch"
+                                       asp-route-currentFilterBankNameCode="@Model.SearchModel.NameCodeBankSearch"
+                                       class="page-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+

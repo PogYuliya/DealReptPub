@@ -1,0 +1,23 @@
+﻿@model ContractViewModel
+
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning font-weight-normal lead" id="errorModalLabel">Error!</h5>
+                <button type="button" class="close scaleIcon focusWarning" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-warning">&times;</span>
+                </button>
+            </div>
+            <div id="errorMessage" class="modal-body text-primary">
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                        class="btn btn-link font-weight-light px-4 text-white text-uppercase btn-modal-success mr-4"
+                        data-dismiss="modal">
+                    Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

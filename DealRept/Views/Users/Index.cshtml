@@ -1,0 +1,292 @@
+﻿@inject IConfiguration Configuration
+@model PaginatedList<User>
+
+@{
+    ViewBag.Title = "Users";
+}
+
+@section Header{
+    <i class="fi-xtluxl-user-thin"></i> Users
+}
+
+<section id="">
+    <div class="container">
+        <form asp-action="Index" method="get">
+            <!--ButtonPanel-->
+            <div class="row">
+                <div class="col-12 px-1">
+                    <div id="buttonPanel" class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col-12 d-flex flex-nowrap justify-content-center">
+                                <button type="submit"
+                                        data-toggle="tooltip" data-placement="top" data-trigger="hover"
+                                        title="Filter users"
+                                        class="scaleIcon btn btn-link text-primary text-center p-0 mr-1">
+                                    <i class="fi-xtlux2-funnel"></i>
+                                </button>
+                                <a asp-action="Index" class="scaleIcon btn btn-link p-0 text-success text-center mr-1"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Reset filters">
+                                    <i class="fi-xnpuh2-funnel"></i>
+                                </a>
+
+                                <div class="dropdown show align-self-center">
+                                    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a class="scaleIcon btn btn-link text-primary p-0 mr-1" asp-action="Index" role="button" id="dropdownMenuLink"
+                                           data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Sort records">
+                                            <i class="fi-xnlux2-sort"></i>
+                                        </a>
+                                    </span>
+                                    <div class="dropdown-menu p-md-1 mt-3 dropDownLink" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item text-primary mb-md-1
+                                           @((Model.SortModel.CurrentSort=="RegistrationDate"||String.IsNullOrEmpty(Model.SortModel.CurrentSort)?"active":""))"
+                                           href="@Url.Action("Index", new {sortOrder=Model.SortModel.RegistrationDateSortParam,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  currentFilterRoleID=Model.SearchModel.RoleID,
+                                                               currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+                                                                     })">
+                                            Registration Date@(String.IsNullOrEmpty(Model.SortModel.CurrentSort)|| Model.SortModel.CurrentSort== "RegistrationDate" ? (String.IsNullOrEmpty(Model.SortModel.CurrentSort) ? @Html.Raw("&#x25be;") : @Html.Raw("&#x25b4;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                        <a class="dropdown-item text-primary mb-md-1
+                                           @((Model.SortModel.CurrentSort=="EmployeeNumber"||Model.SortModel.CurrentSort=="EmployeeNumber_desc"?"active":""))"
+                                           href="@Url.Action("Index",new {sortOrder=Model.SortModel.EmployeeNumberSortParam,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  currentFilterRoleID=Model.SearchModel.RoleID,
+                                                                  currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+                                                                  })">
+                                            Employee Number@(Model.SortModel.CurrentSort == "EmployeeNumber" || Model.SortModel.CurrentSort== "EmployeeNumber_desc" ? (Model.SortModel.CurrentSort == "EmployeeNumber" ? @Html.Raw(" &#x25b4;") : @Html.Raw("&#x25be;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                        <a class="dropdown-item text-primary
+                                           @((Model.SortModel.CurrentSort=="UserFullName"||Model.SortModel.CurrentSort=="UserFullName_desc"?"active":""))"
+                                           href="@Url.Action("Index",new {sortOrder=Model.SortModel.UserFullNameSortParam,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  cdurrentFilterRoleID=Model.SearchModel.RoleID,
+                                                                  currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+        })">
+                                            User Full Name@(Model.SortModel.CurrentSort== "UserFullName" || Model.SortModel.CurrentSort== "UserFullName_desc" ? (Model.SortModel.CurrentSort== "UserFullName" ? @Html.Raw("&#x25b4;") : @Html.Raw("&#x25be;")) : @Html.Raw("&#x25b4;&#x25be;"))
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <a asp-action="SendAdminMessage" class="scaleIcon btn btn-link p-0 text-success mr-1"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Send an email">
+                                    <i class="fi-xnlux2-envelope-text"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Filters -->
+                <div id="filters" class="col-lg-3 px-1 mb-md-2">
+                    <div class="card text-white bodyCreate p-3">
+                        <div class="form-row justify-content-md-around mb-4">
+                            <div class="text-white ml-3">@Html.DisplayFor(model => model.CountRecords) records were found</div>
+                        </div>
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group text-md-center text-lg-left col-lg-12 col-md-5 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="@Model.SearchModel.EmployeeNumber">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputEmployeeNumber"
+                                       role="button" aria-expanded="false">Employee Number</a>
+                                </label>
+                                <input id="collapseInputEmployeeNumber" type="number" asp-for="SearchModel.EmployeeNumber" value="@Model.SearchModel.EmployeeNumber"
+                                       class="form-control collapse @((Model.SearchModel.EmployeeNumber!=default)?"show":"")" placeholder="All">
+                            </div>
+                            <div class="form-group text-md-center text-lg-left col-lg-12 col-md-5 px-1 pb-1 mb-1 whiteLink">
+                                <label asp-for="@Model.SearchModel.UserFullName">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputUserFullName"
+                                       role="button" aria-expanded="false">User Full Name</a>
+                                </label>
+                                <input id="collapseInputUserFullName" type="text" asp-for="@Model.SearchModel.UserFullName" value="@Model.SearchModel.UserFullName" class="form-control collapse @((Model.SearchModel.UserFullName!=null)?"show":"")" placeholder="All">
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group text-md-center text-lg-left col-lg-12 col-md-5 px-1 pb-1 mb-1 whiteLink">
+                                <label for="#collapseRegistrationDate">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseRegistrationDate"
+                                       role="button" aria-expanded="false">Registration Date</a>
+                                </label>
+                                <div id="collapseRegistrationDate" class="input-group collapse  @((Model.SearchModel.RegistrationDateFrom!=default||Model.SearchModel.RegistrationDateTo!=default)?"show":"")">
+                                    <input type="date" asp-for="SearchModel.RegistrationDateFrom" class="form-control p-2">
+                                    <input type="date" asp-for="SearchModel.RegistrationDateTo" class="form-control p-2">
+                                </div>
+                            </div>
+                            <div class="form-group text-md-center text-lg-left col-lg-12 col-md-5 px-1 pb-1 mb-0 whiteLink">
+                                <label asp-for="SearchModel.RoleID">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputRole"
+                                       role="button" aria-expanded="false">Role</a>
+                                </label>
+                                <select id="collapseInputRole" asp-for="SearchModel.RoleID"
+                                        asp-items="@(new SelectList(Model.SearchModel.Roles,"Id","Name"))" class="custom-select collapse  @((Model.SearchModel.RoleID!=default)?"show":"")">
+                                    <option value="" selected>All</option>
+                                </select>
+                            </div>
+                        </div>
+                        <fieldset>
+                            <legend class="whiteLink text-md-center text-lg-left">
+                                <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputApproved"
+                                   role="button" aria-expanded="false">Account Approval</a>
+                            </legend>
+                            <div id="collapseInputApproved" class="collapse @((Model.SearchModel.AccountApprovalSearch!="includeAllAccounts")?"show":"")">
+                                <div class="form-row justify-content-start justify-content-md-around justify-content-lg-start">
+                                    <div class="mb-4 custom-control custom-radio custom-control-inline ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.AccountApprovalSearch, "includeAllAccounts", htmlAttributes: new { @class = "custom-control-input", @id = "4", @value = "@Model.SearchModel.AccountApprovalSearch" })
+                                        <label class="custom-control-label" for="4">Including All</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline mb-4 ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.AccountApprovalSearch, "onlyApproved", htmlAttributes: new { @class = "custom-control-input", @id = "5", @value = "@Model.SearchModel.AccountApprovalSearch" })
+                                        <label class="custom-control-label" for="5">Only Approved</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline ml-3">
+                                        @Html.RadioButtonFor(model => model.SearchModel.AccountApprovalSearch, "onlyNotApproved", htmlAttributes: new { @class = "custom-control-input", @id = "6", @value = "@Model.SearchModel.AccountApprovalSearch" })
+                                        <label class="custom-control-label" for="6">Only Not Approved</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <!--Users-->
+
+                <div class="col-lg-9 px-1 mt-2 mt-md-0">
+                    <div class="d-flex flex-column">
+                        @foreach (var user in Model)
+                        {
+                            <div class="card text-primary card-body shadowBox px-3 pt-3 pb-1 mb-2">
+                                <div class="row">
+                                    <div class="col-md-6 orangeLink">
+                                        <a asp-action="Details"
+                                           asp-route-id="@user.Id" class="px-1 mb-2 mb-md-3 d-block lead font-weight-bold">
+                                            @Html.DisplayFor(modelItem => user.UserFullName)
+                                        </a>
+
+                                        <div class="col-sm-12 pl-1 pr-3 p-0 mb-1 text-justify">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => user.Roles):</span>
+                                            <span class="font-weight-normal"> @String.Join(", ", user.Roles)</span>
+                                        </div>
+                                        <div class="col-sm-12 pl-1 pr-3 p-0 mb-1 text-justify">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => user.EmployeeNumber):</span>
+                                            <span class="font-weight-normal"> @Html.DisplayFor(modelItem => user.EmployeeNumber)</span>
+                                        </div>
+                                        <div class="col-sm-12 pl-1 pr-3 p-0 mb-2 text-justify">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => user.RegistrationDateUTC):</span>
+                                            <span class="font-weight-normal"> @Html.DisplayFor(modelItem => user.RegistrationDateUTC)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-sm-12 text-center mb-2 mb-md-3  whiteLink">
+                                            @if (user.Email != Configuration["AdminConfiguration:Email"])
+                                            {
+                                                <h4>
+                                                    <a asp-action="Edit" asp-route-id="@user.Id" class="scaleBlueButton badge font-weight-light bodyCreate p-2 lead text-uppercase" style="width: 100%;">
+                                                        @(user.IsApproved?"Account Is Approved":"Account Is Not Approved")
+                                                    </a>
+                                                </h4>
+                                            }
+                                            else
+                                            {
+                                                <h4>
+                                                    <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="You can't edit a root admin"
+                                                          class="badge font-weight-light lead bodyCreate p-2 text-uppercase enabledTooltipOnTouch" style="width: 100%;">
+                                                       root admin
+                                                    </span>
+                                                </h4>
+                                            }
+
+                                        </div>
+                                        <div class="orangeLink">
+                                            <a href="mailto:@user.Email"
+                                               class="d-block px-1 mb-1">
+                                                    <span class="font-weight-bold">Email Address:</span>
+                                                    @user.Email
+                                                    <i class="fi-xnluxl-envelope-thin"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-12 text-justify pl-1 pr-3 p-0 mb-1">
+                                            <span class="font-weight-bold">Is Locked Out?:</span>
+                                            @(user.LockoutEnd>DateTimeOffset.Now ? Html.Raw("<span class=\"text-warning\">Yes</span>"): Html.Raw("<span class=\"text-success\">No</span>"))
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <!-- PAGINATION -->
+                    @{
+                        string prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+
+
+                    <div class="row justify-content-center mb-4">
+                        <nav class="ml-3">
+                            <ul class="pagination pagination-sm">
+                                <li class="page-item @prevDisabled">
+                                    <a class="page-link" href="@Url.Action("Index",new {pageNumber=Model.PageIndex-1, sortOrder=Model.SortModel.CurrentSort,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  currentFilterRoleID=Model.SearchModel.RoleID,
+                                                                  currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+                                                                  })">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="@(i==Model.PageIndex ? "page-item active":"page-item")">
+                                        <a class="page-link" href="@Url.Action("Index",new {pageNumber=i, sortOrder=Model.SortModel.CurrentSort,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  currentFilterRoleID=Model.SearchModel.RoleID,
+                                                                  currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+                                                                  })">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                                <li class="page-item  @nextDisabled">
+                                    <a class="page-link" href="@Url.Action("Index",new {pageNumber=Model.PageIndex+1, sortOrder=Model.SortModel.CurrentSort,
+                                                                    currentFilterUserFullName=Model.SearchModel.UserFullName,
+                                                                  currentFilterEmployeeNumber=Model.SearchModel.EmployeeNumber,
+                                                                  currentFilterRoleID=Model.SearchModel.RoleID,
+                                                                  currentFilterAccountApproval=Model.SearchModel.AccountApprovalSearch,
+                                                                  currentFilterRegistrationDateFrom=Model.SearchModel.RegistrationDateFrom,
+                                                                  currentFilterRegistrationDateTo=Model.SearchModel.RegistrationDateTo
+                                                                  })">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+

@@ -1,0 +1,151 @@
+﻿@model ContractViewModel
+
+<div id="detailsPDF">
+    <div class="infoContainer">
+        <div class="infoTitle">Brief Contract information</div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.ContractNumber):
+            </div>
+            <div id="contractNumber" class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.ContractNumber)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.ConclusionDate):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.ConclusionDate)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.ExpirationDate):
+            </div>
+            @if (Model.Contract.ExpirationDate < DateTime.Now && Model.Contract.ContractStatus.Name == "Current"
+            && Model.Contract.IsCourtDispute == false)
+            {
+                <div class="infoData infoColumnRight">
+                    <div class="infoWarning">
+                        @Html.DisplayFor(modelItem => Model.Contract.ExpirationDate) <i class="fi-ctluxx-warning-thin"></i>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="infoData infoColumnRight">
+                    @Html.DisplayFor(modelItem => Model.Contract.ExpirationDate)
+                </div>
+            }
+        </div>
+        <div class="infoRow @((Model.Contract.ContractStatus.Name == "Current") ? "notPrint" : "")">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.TransitionDate):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.TransitionDate)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.ContractAmount) (UAH):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.ContractAmount)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.IsGoods):
+            </div>
+            <div class="infoData infoColumnRight">
+                @(Model.Contract.IsGoods == true ? "Goods" : "Service")
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.Subject):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.Subject)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.ContractStatus.Name):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.ContractStatus.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.Supplier):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.Supplier.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.Branch):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.Branch.Name)
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.IsProlonged)?:
+            </div>
+            <div class="infoData infoColumnRight">
+                @(Model.Contract.IsProlonged == true ? "Prolonged" : "Not Prolonged")
+            </div>
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.IsCourtDispute):
+            </div>
+            @if (Model.Contract.IsCourtDispute == true)
+            {
+                <div class="infoData infoColumnRight">
+                    <div class="infoWarning">Court Dispute <i class="fi-ctluxx-warning-thin"></i></div>
+                </div>
+            }
+            else
+            {
+                <div class="infoData infoColumnRight">
+                    No Court Dispute
+                </div>
+            }
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                Documents:
+            </div>
+            @if ((Model.Contract.ContractStatus.Name == "Current" && Model.Contract.CurrentDocuments.Any())
+            || (Model.Contract.ContractStatus.Name != "Current" && Model.Contract.PastDocuments.Any()))
+            {
+                <div class="infoData infoColumnRight">
+                    @(Model.Contract.ContractStatus.Name == "Current" ? Model.Contract.CurrentDocuments.Count() : Model.Contract.PastDocuments.Count())
+                </div>
+            }
+            else
+            {
+                <div class="infoData infoColumnRight">
+                    0
+                </div>
+            }
+        </div>
+        <div class="infoRow">
+            <div class="infoLabel infoColumnLeft">
+                @Html.DisplayNameFor(modelItem => Model.Contract.Remarks):
+            </div>
+            <div class="infoData infoColumnRight">
+                @Html.DisplayFor(modelItem => Model.Contract.Remarks)
+            </div>
+        </div>
+    </div>
+</div>
+

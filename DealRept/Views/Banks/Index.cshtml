@@ -1,0 +1,213 @@
+﻿@model PaginatedList<Bank>
+
+@{
+    ViewBag.Title = "Banks";
+}
+
+@section Header{
+    <i class="fi-xtluxl-bank-thin"></i> Banks
+}
+
+<section id="main">
+    <div class="container">
+        <form asp-action="Index" method="get">
+            <!--ButtonPanel-->
+            <div class="row">
+                <div class="col-12 px-1">
+                    <div id="buttonPanel" class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col-12 d-flex flex-nowrap justify-content-center">
+                                <button type="submit" formaction=@Url.Action("Index", "Banks") formmethod="get"
+                                        data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Filter banks"
+                                        class="scaleIcon btn btn-link text-success p-0 mr-1">
+                                    <i class="fi-xtlux2-funnel"></i>
+                                </button>
+                                <a asp-action="Index" class="scaleIcon btn btn-link p-0 text-primary mr-1"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Reset filters">
+                                    <i class="fi-xnpuh2-funnel"></i>
+                                </a>
+                                @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-action="Create" class="scaleIcon btn btn-link p-0 text-warning mr-1"
+                                       data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Add a new bank"> <i class="fi-xtlux2-plus"></i></a>
+                                    <a asp-action="ImportData" class="scaleIcon btn btn-link p-0 text-success mr-1"
+                                       data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Upload data"> <i class="fi-xnlux2-upload"></i></a>
+                                }
+                                <a class="scaleIcon btn btn-link p-0 text-primary"
+                                   asp-action="Index" asp-route-sortOrder="@Model.SortModel.NameSortParm"
+                                   asp-route-currentFilterNameCode="@Model.SearchModel.NameCodeBankSearch"
+                                   asp-route-currentFilterLastAdded="@Model.SearchModel.LastAdded"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Sort banks by the name">
+                                    <i class="fi-xnlux2-sort"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Filters -->
+                <div id="filters" class="col-lg-3 px-1 mb-md-2">
+                    <div class="card bodyCreate p-3">
+                        <div class="form-row mb-4">
+                            <div class="col text-md-center text-lg-left">
+                                <div class="ml-3">@Html.DisplayFor(model => model.CountRecords) records were found</div>
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-md-around">
+                            <div class="form-group col-md-5 col-lg-12 text-md-center text-lg-left pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.NameCodeBankSearch">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputBank" role="button"
+                                       aria-expanded="false">@Html.DisplayNameFor(modelItem => Model.SearchModel.NameCodeBankSearch)</a>
+                                </label>
+                                <input id="collapseInputBank" type="text" asp-for="SearchModel.NameCodeBankSearch" value="@Model.SearchModel.NameCodeBankSearch" class="form-control text-primary collapse @((Model.SearchModel.NameCodeBankSearch!=null)?"show":"")" placeholder="All">
+                            </div>
+                            <div class="form-group col-md-5 col-lg-12 text-md-center text-lg-left pb-1 mb-1 whiteLink">
+                                <label asp-for="SearchModel.LastAdded">
+                                    <a class="btn btn-link text-white dropdown-toggle" data-toggle="collapse" href="#collapseInputLastAdded" role="button"
+                                       aria-expanded="false">@Html.DisplayNameFor(modelItem => Model.SearchModel.LastAdded)</a>
+                                </label>
+                                <input id="collapseInputLastAdded" type="number" asp-for="SearchModel.LastAdded" value="@Model.SearchModel.LastAdded" class="form-control text-primary collapse @((Model.SearchModel.LastAdded!=default)?"show":"")" placeholder="All">
+                                <span asp-validation-for="SearchModel.LastAdded" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Banks-->
+                @{
+                    string controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+                }
+
+                <div class="col-lg-9 px-1 mt-2 mt-md-0">
+                    <div class="d-flex flex-column">
+                        @foreach (var bank in Model)
+                        {
+                            <div class="card text-primary card-body shadowBox p-2 pb-1 mb-2">
+                                <div class="row">
+                                    <div class="col-sm-6 flex-column my-auto">
+                                        <div class="col-sm-12 lead font-weight-bold text-center">
+                                            @Html.DisplayFor(modelItem => bank.Name)
+                                        </div>
+                                        <div class="col-sm-12 font-weight-bold text-center">
+                                            @Html.DisplayFor(modelItem => bank.Code)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-12 d-flex flex-nowrap justify-content-center align-items-center mt-1 mb-2">
+                                            @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@bank.ID"
+                                                   class="btn btn-link p-0 text-success mr-2 scaleIcon"
+                                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Edit the bank">
+                                                    <i class="fi-xnlux2-edit"></i>
+                                                </a>
+                                                @if (bank.SuppliersCount != 0)
+                                                {
+                                                    <span>
+                                                        <button type="button" class="btn btn-link text-warning p-0 mr-2 scaleIcon enabledTooltipOnTouch"
+                                                                data-toggle="tooltip" data-placement="top" data-title="You can't delete the bank because it has suppliers">
+                                                            <i class="fi-xnlux2-trash"></i>
+                                                        </button>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Delete the bank">
+                                                        <button type="button" data-toggle="modal"
+                                                                data-backdrop="static" data-keyboard="false"
+                                                                data-entityName="@bank.Name" data-entity="@bank.GetType().Name.ToString()"
+                                                                data-entityCode="@bank.Code"
+                                                                data-id="@bank.ID" data-controller="@controllerName"
+                                                                data-target="#modalDeleteEntity" class="scaleIcon btn btn-link text-warning p-0 mr-2">
+                                                            <i class="fi-xnlux2-trash"></i>
+                                                        </button>
+                                                    </span>
+                                                }
+                                                <a asp-controller="Suppliers" asp-action="Create" asp-route-bankID="@bank.ID"
+                                                   class="btn btn-link p-0 text-primary scaleIcon"
+                                                   data-toggle="tooltip" data-trigger="hover"
+                                                   data-placement="top" title="Create a new supplier">
+                                                    <i class="fi-xnluh3-handshake-thin"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                        <div class="col-sm-12 text-center whiteLink">
+                                            <h4>
+                                                @if (bank.SuppliersCount != 0)
+                                                {
+                                                    <a asp-controller="Suppliers" asp-action="Index"
+                                                       asp-route-currentFilterBankNameCode="@bank.Code" class="scaleBlueButton badge font-weight-light bodyCreate p-2 text-uppercase mx-2" style="width: 75%;">@(bank.SuppliersCount) suppliers</a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge font-weight-light bodyCreate p-2 text-uppercase mx-2" style="width: 75%;">@(bank.SuppliersCount) suppliers</span>
+                                                }
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- PAGINATION -->
+                    @{
+                        string prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+
+                    <div class="row justify-content-center mb-4">
+                        <nav class="ml-3">
+                            <ul class="pagination pagination-sm">
+                                <li class="page-item @prevDisabled">
+                                    <a asp-action="Index"
+                                       asp-route-pageNumber="@(Model.PageIndex-1)" asp-route-sortOrder="@Model.SortModel.CurrentSort"
+                                       asp-route-currentFilterNameCode="@Model.SearchModel.NameCodeBankSearch"
+                                       asp-route-currentFilterLastAdded="@Model.SearchModel.LastAdded"
+                                       class="page-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="@(i==Model.PageIndex ? "page-item active":"page-item")">
+                                        <a class="page-link" href="@Url.Action("Index",new
+                                                              {
+                                                                  pageNumber = i,
+                                                                  sortOrder = Model.SortModel.CurrentSort,
+                                                                  currentFilterLastAdded=Model.SearchModel.LastAdded,
+                                                                  currentFilterNameCode = Model.SearchModel.NameCodeBankSearch
+                                                              })">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                                <li class="page-item  @nextDisabled">
+                                    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" asp-route-sortOrder="@Model.SortModel.CurrentSort"
+                                       asp-route-currentFilterLastAdded="@Model.SearchModel.LastAdded"
+                                       asp-route-currentFilterNameCode="@Model.SearchModel.NameCodeBankSearch"
+                                       class="page-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@*Modals*@
+@{await Html.RenderPartialAsync("_ModalDeleteEntity");}
+

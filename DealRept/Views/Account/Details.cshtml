@@ -1,0 +1,115 @@
+﻿@inject IConfiguration Configuration
+@model User
+@{
+    ViewBag.Title = "Login Details";
+}
+
+@section Header{
+    <i class="fi-xtluxl-sign-in-thin"></i> Login details
+}
+
+
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1">
+                            <a asp-action="Index" asp-controller="Home"
+                               data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To a home page"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Details*@
+        <section id="details">
+            <div class="row">
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5 px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.UserFullName):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.UserFullName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Email Address:</span></h4>
+                            </div>
+                            <div class="col-md-7 text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                <a href="mailto:@Model.Email" class="text-primary d-block px-1 mb-md-2">
+                                    @Model.Email
+                                    <i class="fi-xnluxx-envelope-thin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.IsApproved):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @(Model.IsApproved?"Yes":"No")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 px-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 text-white">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.RegistrationDateUTC):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.RegistrationDateUTC)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 text-white">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.EmployeeNumber):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.EmployeeNumber)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 text-white">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Roles):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @String.Join(", ", Model.Roles)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col px-1 px-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1">
+                            <a asp-action="SendMessageToAdmins"
+                               class="scaleIcon btn btn-link p-0 text-success" data-toggle="tooltip"
+                               data-placement="top" data-trigger="hover" title="Send a message to admin" asp-route-email="@Model.Email">
+                                <i class="fi-xnlux2-headset"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+

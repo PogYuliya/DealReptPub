@@ -1,0 +1,120 @@
+﻿@model DocumentViewModel
+@inject IConfiguration Configuration
+
+@{
+    ViewBag.Title = "Contracts/Create";
+}
+
+@section Header{
+    <div class="orangeLink dirtyLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xnluxl-justify-align-thin"></i> Contracts</a> <span class="text-nowrap lead align-middle">&sol; Create a Document</span>
+    </div>
+}
+
+@*Main*@
+<section id="main">
+    <div class="container">
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-12 px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header d-flex justify-content-center bg-white py-1 dirtyLink">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top"
+                               data-trigger="hover" title="To contracts" data-target="#dirtyCheckModalIndex"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                            <a asp-action="CreateCurrentDocument" class="scaleIcon btn btn-link p-0 text-warning"
+                               data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Clear the form">
+                                <i class="fi-xnlux2-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Create*@
+
+        <form asp-action="CreateCurrentDocument" class="dirty-check" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-justify validationSummary"></div>
+            <div class="row">
+                <div class="col-md-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body mr-md-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-7 px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.CurrentContract.ContractNumber):</span></h4>
+                            </div>
+                            <div class="col-md-5 text-primary text-center text-md-left px-md-3 py-1">
+                                @Html.DisplayFor(modelItem => Model.CurrentContract.ContractNumber)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7 px-md-3 text-light ">
+                                <h4 class="mb-0 mb-md-2">
+                                    <span class="badge font-weight-light bodyCreate p-2" style=" width: 100%;">
+                                        @Html.DisplayNameFor(modelItem => Model.CurrentContract.ConclusionDate):
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-md-5 text-primary text-center text-md-left px-md-3 py-1">
+                                @Html.DisplayFor(modelItem => Model.CurrentContract.ConclusionDate)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body ml-md-1 shadowBox bodyCreate">
+                        <div class="row">
+                            <div class="form-row custom-file mx-3">
+                                <input id="the-file" type="file" accept=".pdf, .PDF"
+                                       asp-for="FileToUpload.FormFile" aria-describedby="fileHelpBlock" class="custom-file-input"
+                                       data-val="true" data-val-filesize-maxfilesize="@Configuration["FileSizeLimit"]"
+                                       data-val-filesize="Document file size can't be more than @(Int32.Parse(Configuration["FileSizeLimit"])/1000000)MB.">
+                                <label class="custom-file-label text-primary search"
+                                       asp-for="@Model.FileToUpload.FormFile">Choose a Document</label>
+                            </div>
+                            <div class="ml-3">
+                                <small id="fileHelpBlock" class="form-text text-white-50">
+                                    You can only upload .pdf files less than 10 MB in file size.
+                                </small>
+                            </div>
+                            <div class="m-3 text-danger"><span asp-validation-for="FileToUpload.FormFile"></span>  </div>
+                            <div class="m-3 text-danger"><span asp-validation-for="FileToUpload"></span>  </div>
+                            <input hidden asp-for="CurrentContractID" value="@Model.CurrentContractID" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Down Pannel Button*@
+            <section id="downPanelButton">
+                <div class="row">
+                    <div class="col-md-12 px-1 p-md-0">
+                        <div class="card mb-4">
+                            <div id="cardFooter" class="card-header d-flex justify-content-center bg-white py-1 dirtyLink">
+                                <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover"
+                                   title="To contracts" data-target="#dirtyCheckModalIndex"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                <button type="submit" class="scaleIcon btn btn-link text-success p-0 ml-1" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add document">
+                                    <span role="img" class="p-1 pb-2">
+                                        <svg fill="#20c975" width="26px" height="26px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1827.701 303.065 698.835 1431.801 92.299 825.266 0 917.564 698.835 1616.4 1919.869 395.234z" fill-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+
+
+<!-- Modals -->
+@{await Html.RenderPartialAsync("_ModalDirtyChecklPartial", new ModelForDirtyCheckModal { ID = "dirtyCheckModalIndex", Controller = "Contracts", Action = "Index", Entity = "Contract" });}

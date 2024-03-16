@@ -1,0 +1,22 @@
+﻿@model ContractViewModel
+
+<div class="modal fade" id="startOverdueModal" tabindex="-1" aria-labelledby="startOverdueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning font-weight-normal lead" id="startOverdueModalLabel">You can`t add events!</h5>
+                <button type="button" class="close scaleIcon focusWarning" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-warning">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-primary">
+                Selected dates are not available; select today or later date.
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                class="btn btn-link font-weight-light px-4 text-white text-uppercase btn-modal-success mr-4"
+                        data-dismiss="modal">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>

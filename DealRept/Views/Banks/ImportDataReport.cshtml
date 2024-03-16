@@ -1,0 +1,113 @@
+﻿@model ImportReportViewModel
+
+@{
+    ViewBag.Title = "Import Bank Data";
+}
+
+@section Header{
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index" data-target="#dirtyCheckModalIndex"><i class="fi-xtluxl-bank-thin"></i> Banks</a> <span class="lead align-middle text-nowrap">&sol; Import bank data report</span>
+    </div>
+}
+
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header bg-white d-flex justify-content-center py-1">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To banks"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Import Report*@
+        <section id="importReport">
+            <div class="row">
+                <div class="col-md-6 px-1 p-md-0">
+                    <div class="card card-body mb-2 mr-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.SuccessImportCount != default)
+                            {
+                                <div class="col">
+                                    <div class="whiteLink text-center">
+                                        <h4>
+                                            <a asp-route-currentFilterLastAdded="@Model.SuccessImportCount"
+                                               asp-action="Index"
+                                               class="btn-modal-success badge font-weight-light bodyCreate p-2 shrinkButton">
+                                               @Model.SuccessImportCount banks were imported</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <div class="text-center">
+                                        <h4>
+                                            <span class="badge font-weight-light bodyCreate p-2 shrinkButton">
+                                            @Model.SuccessImportCount banks were imported</span>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 px-1 p-md-0">
+                    <div class="card mb-2 card-body ml-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.UnSuccessImportCount != default)
+                            {
+                                <div class="col text-center">
+                                    <div class="whiteLink">
+                                        <h4>
+                                            <a data-toggle="collapse" href="#collapseInstructionsToCheck" role="button" aria-expanded="false"
+                                               class="btn-modal-warning badge font-weight-light bodyCreate p-2 dropdown-toggle shrinkButton">@Model.UnSuccessImportCount banks were not imported</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseInstructionsToCheck" class="collapse text-warning text-justify">
+                                        Please check for empty cells, double values and format errors. Allowed characters for name: only letters, can't start or end with whitespace or hyphen; for code: only numbers, length: 6.
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col text-center">
+                                    <h4>
+                                        <span class="badge text-center font-weight-light bodyCreate p-2 shrinkButton">
+                                        @Model.UnSuccessImportCount cities were not imported</span>
+                                        </h4>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col px-1 p-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header bg-white d-flex justify-content-center py-1">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To cities"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

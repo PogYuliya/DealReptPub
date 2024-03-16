@@ -1,0 +1,361 @@
+﻿@model Supplier
+
+@{
+    ViewBag.Title = "Suppliers/Details";
+}
+
+@section Header {
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xnluhl-handshake-thin"></i> Suppliers</a> <span class="lead align-middle text-nowrap">&sol; Suppliers`s Details</span>
+    </div>
+}
+
+<!-- Main -->
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-12 px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col d-flex flex-nowrap justify-content-center">
+                                <a asp-action="Index"
+                                   data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To suppliers"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model.ID"
+                                       class="scaleIcon btn btn-link p-0 text-success mr-1" data-toggle="tooltip"
+                                       data-trigger="hover" data-placement="top" title="Edit the supplier">
+                                        <i class="fi-xnlux2-edit"></i>
+                                    </a>
+                                    <a asp-action="Create" asp-controller="Contracts" asp-route-supplierID="@Model.ID"
+                                       class="scaleIcon btn btn-link p-0 text-primary mr-1"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Add a new contract">
+                                        <i class="fi-xnlux2-justify-align"></i>
+                                    </a>
+                                    @if (Model.CurrentContractCount != default || Model.PastContractCount != default)
+                                    {
+                                        <button type="button" class="btn btn-link text-warning p-0 mr-1 scaleIcon
+                                                                    deleteRestrictTooltip" data-toggle="tooltip" data-placement="top"
+                                        data-title="You can't delete the supplier because it has contracts">
+                                            <i class="fi-xnlux2-trash"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Delete the supplier">
+                                            <button type="button" data-toggle="modal"
+                                                    data-backdrop="static"
+                                                    data-entityName="@Model.Name" data-entity="@Model.GetType().Name.ToString()"
+                                                    data-id="@Model.ID" data-controller="Suppliers"
+                                                    data-target="#modalDeleteEntity" class="scaleIcon btn btn-link text-warning p-0 mr-1">
+                                                <i class="fi-xnlux2-trash"></i>
+                                            </button>
+                                        </span>
+                                    }
+                                }
+                                <button id="printPDF" type="button" class="btn btn-link text-primary p-0 mr-1 scaleIcon notDisplayOnTouch"
+                                        data-trigger="hover" data-toggle="tooltip" data-placement="top" data-title="Print supplier information"
+                                        data-entity="Supplier" data-controller="Suppliers"
+                                        data-entity-id="@Model.ID" data-entity-identity="@Model.Name">
+                                    <i class="fi-xnlux2-printer"></i>
+                                </button>
+                                <a href="#downPanelButton" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Down"
+                                   class="scaleIcon btn btn-link p-0 text-primary">
+                                    <i class="fi-xnldx2-arrow-simple"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Details*@
+        <section id="details">
+            <div class="row">
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div id="card_1" class="card h-100 card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5  px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Name):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Name)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.LegalCode):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.LegalCode)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style=" width: 100%;">@Html.DisplayNameFor(modelItem => Model.LegalAddress):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.LegalAddress)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Specialization):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.Specialization.Name)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div id="card_2" class="card h-100 card-body ml-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.DirectorFullName):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary @(Model.DirectorFullName.Length<=40?"text-center text-md-left":"text-justify") px-md-2 py-1 bg-white">
+                                @Html.DisplayFor(modelItem => Model.DirectorFullName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.CompanyTelephone):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                @PhoneFormatter.FormatPhNumber(Model.CompanyTelephone, "")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.CompanyEmail):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                <a href="mailto:@Model.CompanyEmail" class="text-primary d-block px-1 mb-md-2">
+                                    @Model.CompanyEmail
+                                    <i class="fi-xnluxx-envelope-thin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.NegativeRemarks):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary @(Model.NegativeRemarks== null ? "text-center text-md-left":"text-justify") px-md-2 py-1 bg-white">
+                                @(Model.NegativeRemarks != null
+                                    ? Html.Raw($"<span class=\"text-warning\"><i class=\"fi-ctluxx-smiley-sad-thin\"></i> {Model.NegativeRemarks}</span>")
+                                    : Html.Raw("<span class=\"text-success\"><i class=\"fi-ctluxx-smiley-happy-thin\"></i> Supplier doesn`t have negative remarks</span>")
+                                    )
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bankingContactPerson">
+            <div class="row">
+                @*Banking Details*@
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div id="card_3" class="card card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-12 whiteLink  text-center">
+                                <h4><a class="scaleBlueButton badge  font-weight-light bodyCreate p-2 dropdown-toggle" data-toggle="collapse" href="#collapseBankDetails" role="button" aria-expanded="false" style="width: 50%;">Banking Details</a></h4>
+                            </div>
+                        </div>
+                        <div class="collapse" id="collapseBankDetails">
+                            <div class="row">
+                                <div class="col-md-5 px-md-3 ">
+                                    <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.BankAccount):</span></h4>
+                                </div>
+                                <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                    @Html.DisplayFor(modelItem => Model.BankAccount)
+                                </div>
+                            </div>
+                            <div class="row orangeLink">
+                                <div class="col-md-5 px-md-3 ">
+                                    <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Bank.Name):</span></h4>
+                                </div>
+                                <div class="col-md-7 text-primary @(Model.Bank.Name.Length<=40?"text-center text-md-left":"text-justify") text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                    <a class="text-primary d-block px-1 mb-md-2" asp-controller="Banks" asp-action="Index"
+                                       asp-route-currentFilterNameCode="@Model.Bank.Code">
+                                        @Html.DisplayFor(modelItem => Model.Bank.Name) <i class="fi-ctluxx-info"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 px-md-3 ">
+                                    <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Bank.Code):</span></h4>
+                                </div>
+                                <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 bg-white">
+                                    @Html.DisplayFor(modelItem => Model.Bank.Code)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Contact person*@
+                <div class="col-lg-6 px-1 p-md-0">
+                    <div id="card_4" class="card card-body ml-lg-1 shadowBox mb-2">
+                        @if (Model.ContactFirstName != null || Model.ContactLastName != null
+                        || Model.ContactMiddleName != null || Model.ContactTelephone != null || Model.ContactEmail != null)
+                        {
+                            <div class="row">
+                                <div class="col-md-12  text-center whiteLink">
+                                    <h4><a class="scaleBlueButton badge  font-weight-light bodyCreate p-2 dropdown-toggle" data-toggle="collapse" href="#collapseContactPerson" role="button" aria-expanded="false" style="width: 50%;">Contact Person</a></h4>
+                                </div>
+                            </div>
+                            <div class="collapse" id="collapseContactPerson">
+                                <div class="row">
+                                    <div class="col-md-5  px-md-3">
+                                        <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.ContactFullName):</span></h4>
+                                    </div>
+                                    <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                        @Html.DisplayFor(modelItem => Model.ContactFullName)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 px-md-3 ">
+                                        <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.ContactEmail):</span></h4>
+                                    </div>
+                                    <div class="col-md-7 text-primary text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                        <a href="mailto:@Model.ContactEmail" class="text-primary d-block px-1 mb-md-2">
+                                            @Model.ContactEmail
+                                            @(Model.ContactEmail != null ? Html.Raw("<i class=\"fi-xnluxx-envelope-thin\"></i>") : null)
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 px-md-3 ">
+                                        <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style=" width: 100%;">@Html.DisplayNameFor(modelItem => Model.ContactTelephone):</span></h4>
+                                    </div>
+                                    <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                        @(Model.ContactTelephone != null ? PhoneFormatter.FormatPhNumber(Model.ContactTelephone, "") : null)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-md-12  text-center whiteLink">
+                                    <h4>
+                                        <a class="badge  font-weight-light bodyCreate p-2" data-toggle="tooltip" data-placement="top"
+                                           title="There is no information about contact person" data-trigger="hover" style="width: 50%;">Contact Person</a>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Supplier Contracts*@
+        <section id="supplierContracts">
+            <div class="row">
+                <div class="col-md-6 mb-2 px-1 p-md-0">
+                    <div class="card card-body mr-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.CurrentContractCount != default)
+                            {
+                                <div class="col">
+                                    <div class="whiteLink text-center">
+                                        <h4>
+                                            <a asp-controller="Contracts" asp-action="Index"
+                                               asp-route-currentFilterType="currentContracts"
+                                               asp-route-currentFilterSupplier="@Model.Name"
+                                               class="scaleBlueButton badge  font-weight-light bodyCreate p-2"
+                                               style="width: 50%;">@Model.CurrentContractCount Current Contracts</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <div class="text-center">
+                                        <h4>
+                                            <span class="badge  font-weight-light bodyCreate p-2"
+                                                  style="width: 50%;">@Model.CurrentContractCount Current Contracts</span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2 px-1 p-md-0">
+                    <div class="card card-body ml-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.PastContractCount != default)
+                            {
+                                <div class="col">
+                                    <div class="text-center whiteLink">
+                                        <h4>
+                                            <a asp-controller="Contracts" asp-action="Index"
+                                               asp-route-currentFilterType="pastContracts"
+                                               asp-route-currentFilterSupplier="@Model.Name"
+                                               class="scaleBlueButton badge  font-weight-light bodyCreate p-2"
+                                               style="width: 50%;">@Model.PastContractCount Past Contracts</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col text-center">
+                                    <h4>
+                                        <span class="badge text-center  font-weight-light bodyCreate p-2"
+                                              style="width: 50%;">@Model.PastContractCount Past Contracts</span>
+                                    </h4>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col-md-12 px-1 p-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header bg-white py-1">
+                            <div class="col d-flex justify-content-center">
+                                <a asp-action="Index"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To suppliers"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                <a href="#upperPanelButton"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Up"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xwlux2-arrow-simple"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+@*Modals*@
+@{
+    await Html.RenderPartialAsync("_ModalDeleteEntity");
+}
+
+
+
+

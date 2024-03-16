@@ -1,0 +1,39 @@
+﻿@model ContractViewModel
+
+@{
+    ViewBag.Title = "Contracts/Events";
+}
+
+@section Header {
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xnluxl-justify-align-thin"></i> Contracts</a> <span class="lead align-middle text-nowrap">&sol; Contract Events</span>
+    </div>
+}
+
+<section id="events">
+    <div class="container">
+        <div class="orangeLink">
+            <a class="px-1 text-primary lead" asp-action="Details"
+               asp-route-id="@Model.Contract.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name">
+                Contract #@Html.DisplayFor(modelItem => modelItem.Contract.ContractNumber)
+                from @Html.DisplayFor(modelItem=>modelItem.Contract.ConclusionDate)
+            </a>
+        </div>
+        <div id="contractCalendar" data-id="@Model.Contract.ID"
+             data-start-term="@Model.StartEventTerm"
+             data-end-term="@Model.EndEventTerm"
+             data-expiration-date="@Model.Contract.ExpirationDate.ToString("s")"
+             data-conclusion-date="@Model.Contract.ConclusionDate.ToString("s")"
+             data-contract-status="@Model.Contract.ContractStatus.Name"
+             class="text-primary mt-3"></div>
+    </div>
+</section>
+
+
+<!-- Modals -->
+@{
+    await Html.RenderPartialAsync("_ModalDeleteEventPartial");
+    await Html.RenderPartialAsync("_ModalEventDetailsPartial");
+    await Html.RenderPartialAsync("_ModalEventCreatePartial");
+    await Html.RenderPartialAsync("_ModalErrorEventPartial");
+}

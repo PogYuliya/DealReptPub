@@ -1,0 +1,360 @@
+﻿@model ContractViewModel
+
+@{
+    ViewBag.Title = "Contracts/Details";
+}
+
+@section Header {
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xnluxl-justify-align-thin"></i> Contracts</a> <span class="lead align-middle text-nowrap">&sol; Contract Details</span>
+    </div>
+}
+
+<!-- Main -->
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col-12 px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header bg-white py-1">
+                            <div class="col d-flex flex-nowrap justify-content-center">
+                                <a asp-action="Index" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="To contracts"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                                {
+                                    @if (Model.Contract.ContractStatus.Name == "Current")
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@Model.Contract.ID"
+                                           class="scaleIcon btn btn-link p-0 text-success mr-1" data-toggle="tooltip"
+                                           data-placement="top" data-trigger="hover" title="Edit the contract">
+                                            <i class="fi-xnlux2-edit"></i>
+                                        </a>
+                                        @if (Model.Contract.CurrentDocuments.Count != 0)
+                                        {
+                                            <button type="button" class="btn btn-link text-warning p-0 mr-1 scaleIcon enabledTooltipOnTouch"
+                                                    data-toggle="tooltip" data-placement="top" data-title="You can't delete the contract because it has documents">
+                                                <i class="fi-xnlux2-trash"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Delete the contract">
+                                                <button type="button" data-toggle="modal"
+                                                        data-backdrop="static"
+                                                        data-entityName="@Model.Contract.ContractNumber" data-entitycode="dated @Html.DisplayFor(modelItem => Model.Contract.ConclusionDate)" data-entity="Contract"
+                                                        data-id="@Model.Contract.ID" data-controller="Contracts"
+                                                        data-target="#modalDeleteEntity" class="scaleIcon btn btn-link text-warning p-0 mr-1">
+                                                    <i class="fi-xnlux2-trash"></i>
+                                                </button>
+                                            </span>
+                                        }
+                                    }
+                                }
+                                <a asp-action="ShowContractEvents" asp-route-id="@Model.Contract.ID"
+                                   asp-route-contractStatus="@Model.Contract.ContractStatus.Name"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1" data-toggle="tooltip"
+                                   data-placement="top" data-trigger="hover" title="Show contract events">
+                                    <i class="fi-xnlux2-calendar-clock"></i>
+                                </a>
+                                <button id="printPDF" type="button" class="btn btn-link text-success p-0 mr-1 scaleIcon notDisplayOnTouch"
+                                        data-trigger="hover" data-toggle="tooltip" data-placement="top" data-title="Print contract information"
+                                        data-entity="Contract" data-controller="Contracts"
+                                        data-entity-id="@Model.Contract.ID" data-entity-identity="@("#" + Model.Contract.ContractNumber)"
+                                        data-contract-type="@Model.Contract.ContractStatus.Name">
+                                    <i class="fi-xnlux2-printer"></i>
+                                </button>
+                                <a id="headerDown" href="#downPanelButton" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Down"
+                                   class="scaleIcon text-primary btn btn-link p-0">
+                                    <i class="fi-xnldx2-arrow-simple"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        @*Details*@
+        <section>
+            <div id="contractDetails" class="row">
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5 px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.ContractNumber):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.ContractNumber)
+                            </div>
+                        </div>
+                        <div class=" row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style=" width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.ConclusionDate):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.ConclusionDate)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.ExpirationDate):</span></h4>
+                            </div>
+                            @if (Model.Contract.ExpirationDate < DateTime.Now && Model.Contract.ContractStatus.Name == "Current"
+                            && Model.Contract.IsCourtDispute == false)
+                            {
+                                <div class="col-md-7 text-primary text-center text-md-left px-md-1 py-1 orangeLink">
+                                    <a asp-action="Edit" asp-route-id="@Model.Contract.ID"
+                                       data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Please consider changing contract status"
+                                       class="d-block px-1 mb-md-2 text-warning">
+                                        @Html.DisplayFor(modelItem => Model.Contract.ExpirationDate) <i class="fi-ctluxx-warning-thin"></i>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1 orangeLink">
+
+                                    @Html.DisplayFor(modelItem => Model.Contract.ExpirationDate)
+                                </div>
+                            }
+                        </div>
+                        <div class="row" @((Model.Contract.ContractStatus.Name == "Current") ? "hidden" : "")>
+                            <div class="col-md-5 px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.TransitionDate):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.TransitionDate)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.ContractAmount) (UAH):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.ContractAmount)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.IsGoods):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @(Model.Contract.IsGoods == true ? "Goods" : "Service")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.Subject):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary @(Model.Contract.Subject.Length <= 40 ? "text-center text-md-left":"text-justify") px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.Subject)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.ContractStatus.Name):</span></h4>
+                            </div>
+                            <div id="contractType" class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.ContractStatus.Name)
+                            </div>
+                        </div>
+                        <div class="row orangeLink">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.Supplier):</span></h4>
+                            </div>
+                            <div class="text-primary col-md-7 pt-md-1 my-1 my-md-0 px-md-1 @(Model.Contract.Supplier.Name.Length<=40?"text-center text-md-left":"text-justify")">
+                                <a asp-controller="Suppliers" asp-action="Details" asp-route-id="@Model.Contract.SupplierID" class="d-block px-1 mb-md-2">
+                                    @Html.DisplayFor(modelItem => Model.Contract.Supplier.Name)
+                                    <i class="fi-ctluxx-info"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row orangeLink">
+                            <div class="col-md-5 px-md-3  ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.Branch):</span></h4>
+                            </div>
+                            <div class="col-md-7 pt-md-1 my-1 my-md-0 px-md-1 text-primary @(Model.Contract.Branch.Name.Length <= 40 ? "text-center text-md-left":"text-justify") ">
+                                <a asp-controller="Branches" asp-action="Details" asp-route-id="@Model.Contract.BranchID"
+                                   class="px-1 d-block mb-md-2">
+                                    @Html.DisplayFor(modelItem => Model.Contract.Branch.Name)
+                                    <i class="fi-ctluxx-info"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.IsProlonged):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @(Model.Contract.IsProlonged == true ? "Prolonged" : "Not Prolonged")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.IsCourtDispute):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @(Model.Contract.IsCourtDispute == true
+                                    ? Html.Raw("<span class=\"text-warning\"><svg width=\"1.66em\" height='1.66em' fill='#ff6825' viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'><path d='M 500 0C 224 0 0 224 0 500C 0 776 224 1000 500 1000C 776 1000 1000 776 1000 500C 1000 224 776 0 500 0C 500 0 500 0 500 0M 500 25C 762 25 975 238 975 500C 975 762 762 975 500 975C 238 975 25 762 25 500C 25 238 238 25 500 25C 500 25 500 25 500 25M 664 111C 664 111 682 129 682 129C 696 143 696 167 682 182C 682 182 673 191 673 191C 673 191 797 314 797 314C 797 314 806 306 806 306C 820 291 844 291 859 306C 859 306 876 323 876 323C 891 338 891 362 876 376C 876 376 735 518 735 518C 720 532 696 532 682 518C 682 518 664 500 664 500C 650 485 650 462 664 447C 664 447 673 438 673 438C 673 438 620 385 620 385C 620 385 496 509 496 509C 496 509 505 518 505 518C 520 532 520 556 505 571C 505 571 275 801 275 801C 261 815 237 815 222 801C 222 801 187 765 187 765C 172 751 172 727 187 712C 187 712 417 482 417 482C 431 468 455 468 470 482C 470 482 479 491 479 491C 479 491 602 367 602 367C 602 367 549 314 549 314C 549 314 541 323 541 323C 526 338 502 338 488 323C 488 323 470 306 470 306C 455 291 455 267 470 253C 470 253 611 111 611 111C 619 104 628 100 638 100C 647 100 657 104 664 111C 664 111 664 111 664 111M 629 129C 629 129 488 270 488 270C 482 275 482 283 488 288C 488 288 505 306 505 306C 510 311 518 311 523 306C 523 306 664 164 664 164C 669 159 669 151 664 146C 664 146 647 129 647 129C 644 126 641 125 638 125C 635 125 631 126 629 129C 629 129 629 129 629 129M 567 297C 567 297 691 420 691 420C 691 420 779 332 779 332C 779 332 655 208 655 208C 655 208 567 297 567 297M 823 323C 823 323 682 465 682 465C 677 470 677 477 682 482C 682 482 700 500 700 500C 705 505 712 505 717 500C 717 500 859 359 859 359C 864 354 864 346 859 341C 859 341 841 323 841 323C 839 321 835 319 832 319C 829 319 826 321 823 323C 823 323 823 323 823 323M 434 500C 434 500 205 730 205 730C 200 735 200 742 205 747C 205 747 240 783 240 783C 245 788 253 788 258 783C 258 783 488 553 488 553C 493 548 493 540 488 535C 488 535 452 500 452 500C 450 497 446 496 443 496C 440 496 437 497 434 500C 434 500 434 500 434 500'/></svg> Court Dispute</span> ")
+                                    : Html.Raw("<span class=\"text-success\"><svg width=\"1.66em\" height=\"1.66em\" fill='#20c975' viewBox=\"0 0 1000 1000\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M 500 0C 224 0 0 224 0 500C 0 776 224 1000 500 1000C 776 1000 1000 776 1000 500C 1000 224 776 0 500 0C 500 0 500 0 500 0M 500 25C 762 25 975 238 975 500C 975 762 762 975 500 975C 238 975 25 762 25 500C 25 238 238 25 500 25C 500 25 500 25 500 25M 387 325C 387 359 359 387 325 387C 291 387 262 359 262 325C 262 291 291 262 325 262C 359 262 387 291 387 325C 387 325 387 325 387 325M 738 325C 738 359 709 387 675 387C 641 387 613 359 613 325C 613 291 641 262 675 262C 709 262 738 291 738 325C 738 325 738 325 738 325M 772 616C 781 616 786 626 782 634C 731 743 621 812 500 812C 379 813 269 743 218 634C 215 628 217 620 224 617C 230 614 237 617 240 623C 288 724 389 788 500 788C 611 787 712 723 760 623C 762 619 766 616 771 616C 771 616 771 616 772 616C 772 616 772 616 772 616\"/></svg> No Court Dispute</span>")
+                                    )
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Contract.Remarks):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary @(Model.Contract.Remarks?.Length<=29?"text-center text-md-left":"text-justify") px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Contract.Remarks)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Document Card*@
+        <section id="documentCard">
+            <div class="row px-1 p-md-0">
+                <div class="card card-body p-4 mb-2 shadowBox">
+                    <div class="row flex-nowrap">
+                        <div class="col-6 px-1 px-md-3 whiteLink">
+                            <h4>
+                                @if ((Model.Contract.ContractStatus.Name == "Current" && Model.Contract.CurrentDocuments.Any())
+                                || (Model.Contract.ContractStatus.Name != "Current" && Model.Contract.PastDocuments.Any()))
+                                {
+                                    <a class="badge  font-weight-light bodyCreate p-2 dropdown-toggle scaleBlueButton"
+                                       data-toggle="collapse" href="#collapseDocuments" role="button" aria-expanded="false" style="width: 100%;">
+                                        @(Model.Contract.ContractStatus.Name == "Current" ? Model.Contract.CurrentDocuments.Count() : Model.Contract.PastDocuments.Count())  Documents
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="badge  font-weight-light bodyCreate p-2"
+                                          style="width: 100%;">
+                                        0 Documents
+                                    </span>
+                                }
+                            </h4>
+                        </div>
+                        <div class="col-4 col-md-3 px-1 px-md-3 ">
+                            <h4><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">Upload Date</span></h4>
+                        </div>
+                        <div class="col-2 col-md-3 px-1 px-md-3">
+                            <h4></h4>
+                        </div>
+                    </div>
+                    <div id="collapseDocuments" class="collapse">
+                        @if (Model.Contract.ContractStatus.Name == "Current")
+                        {
+                            @foreach (var item in Model.Contract.CurrentDocuments)
+                            {
+                                <div class="row flex-nowrap">
+                                    <div class="col-6 px-1 px-md-3 text-primary py-md-1 text-center text-md-left orangeLink">
+                                        <a class="px-1 p-md-1 d-block" target="_blank" asp-action="OpenDocument" asp-route-id="@item.ID"
+                                           asp-route-contractStatus="@Model.Contract.ContractStatus.Name">
+                                            @if (item.IsDeleted)
+                                            {
+                                                <del>@Html.DisplayFor(modelItem => item.Name)</del>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            }
+                                        </a>
+                                    </div>
+                                    <div class="col-4 col-md-3 px-1 px-md-3 text-primary py-md-2 text-center">
+                                        @Html.DisplayFor(modelItem => item.DateOfUploading)
+                                    </div>
+                                    <div class="col-2 col-md-3 px-1 px-md-3 text-primary py-md-1 d-flex justify-content-center">
+                                        <a asp-action="OpenDocument" asp-route-id="@item.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name"
+                                           target="_blank" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="View the document"
+                                           class="scaleIcon btn btn-link p-0 text-primary mr-3"><i class="fi-xnluxx-eye"></i></a>
+                                        <a asp-action="DownloadDocument" asp-route-id="@item.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name"
+                                           class="scaleIcon btn btn-link p-0 text-success" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download the document">
+                                            <i class="fi-xtluxx-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            @foreach (var item in Model.Contract.PastDocuments)
+                            {
+                                <div class="row flex-nowrap">
+                                    <div class="col-6 text-primary px-1 px-md-3 py-md-1 text-center text-md-left orangeLink">
+                                        <a class="p-1 d-block" target="_blank" asp-action="OpenDocument" asp-route-id="@item.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name">
+                                            @if (item.IsDeleted)
+                                            {
+                                                <del>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </del>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            }
+                                        </a>
+                                    </div>
+                                    <div class="col-4 col-md-3 px-1 px-md-3 text-primary py-md-1 text-center">
+                                        <div class="p-1">@Html.DisplayFor(modelItem => item.DateOfUploading)</div>
+                                    </div>
+                                    <div class="col-2 col-md-3 px-1 px-md-3 text-primary py-md-1 d-flex justify-content-center">
+                                        <a asp-action="OpenDocument" asp-route-id="@item.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name"
+                                           target="_blank" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="View the document"
+                                           class="text-primary mr-3 p-0 scaleIcon"><i class="fi-xnluxx-eye"></i></a>
+                                        <a asp-action="DownloadDocument" asp-route-id="@item.ID" asp-route-contractStatus="@Model.Contract.ContractStatus.Name"
+                                           class="text-success p-0 scaleIcon" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Download the document">
+                                            <i class="fi-xtluxx-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col-md-12 px-1 p-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header bg-white py-1">
+                            <div class="col d-flex flex-nowrap justify-content-center">
+                                <a asp-action="Index" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="To contracts"
+                                   class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                    <i class="fi-xnllx2-arrow-simple"></i>
+                                </a>
+                                <a id="footerUp" href="#upperPanelButton" data-trigger="hover" data-toggle="tooltip" data-placement="top" title="Up"
+                                   class="btn btn-link p-0 scaleIcon text-primary">
+                                    <i class="fi-xwlux2-arrow-simple"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+
+@*Modals*@
+@{
+    await Html.RenderPartialAsync("_ModalDeleteEntity");
+}
+
+

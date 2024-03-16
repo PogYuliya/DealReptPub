@@ -1,0 +1,249 @@
+﻿@model Branch
+
+@{
+    ViewBag.Title = "Branches/Details";
+}
+
+@section Header {
+    <div class="orangeLink">
+        <a class="px-1 pb-1" asp-action="Index"><i class="fi-xnluxl-data-structure-thin"></i> Branches</a> <span class="lead align-middle text-nowrap">&sol; Branch Details</span>
+    </div>
+}
+
+<!-- Main -->
+<section id="main">
+    <div class="container">
+
+        @*Upper Button Panel*@
+        <section id="upperPanelButton">
+            <div class="row">
+                <div class="col px-1 px-md-0">
+                    <div class="card my-2">
+                        <div class="card-header bg-white d-flex justify-content-center py-1">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To branches"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                            @if (User.Claims.Select(c => c.Value).ToList().Contains("ContractStaff"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.ID" class="scaleIcon btn btn-link p-0 text-success mr-2"
+                                   data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Edit the branch">
+                                    <i class="fi-xnlux2-edit"></i>
+                                </a>
+                                <a asp-action="Create" asp-controller="Contracts" asp-route-branchID="@Model.ID"
+                                   class="scaleIcon btn btn-link p-0 text-primary" data-toggle="tooltip"
+                                   data-trigger="hover" data-placement="top" title="Add a new contract">
+                                    <i class="fi-xnlux2-justify-align"></i>
+                                </a>
+                                @if (Model.CurrentContractCount != default || Model.PastContractCount != default)
+                                {
+                                    <button type="button" class="btn btn-link text-warning p-0 mr-1 scaleIcon enabledTooltipOnTouch"
+                                            data-toggle="tooltip" data-placement="top" data-title="You can't delete the branch because it has contracts">
+                                        <i class="fi-xnlux2-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Delete the branch">
+                                        <button type="button" data-toggle="modal"
+                                                data-backdrop="static"
+                                                data-entityName="@Model.Name" data-entity="@Model.GetType().Name.ToString()"
+                                                data-id="@Model.ID" data-controller="Branches"
+                                                data-target="#modalDeleteEntity" class="scaleIcon btn btn-link text-warning p-0">
+                                            <i class="fi-xnlux2-trash"></i>
+                                        </button>
+                                    </span>
+                                }
+                            }
+                            <button id="printPDF" type="button" class="btn btn-link text-primary p-0 mr-1 scaleIcon notDisplayOnTouch"
+                                    data-trigger="hover" data-toggle="tooltip" data-placement="top" data-title="Print branch information"
+                                    data-entity="Branch" data-controller="Branches"
+                                    data-entity-id="@Model.ID" data-entity-identity="@Model.Name">
+                                <i class="fi-xnlux2-printer"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Details*@
+        <section id="details">
+            <div class="row">
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body mr-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-5  px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Name):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Name)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5  px-md-3">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.Code):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.Code)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.BranchTelephone):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @PhoneFormatter.FormatPhNumber(Model.BranchTelephone, "")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.BranchEmail):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                <a href="mailto:@Model.BranchEmail" class="text-primary d-block px-1 mb-md-2">
+                                    @Model.BranchEmail
+                                    <i class="fi-xnluxx-envelope-thin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.PostalAddress):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-center text-md-left px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.PostalAddress)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 px-1 p-md-0 mb-2">
+                    <div class="card h-100 card-body ml-lg-1 shadowBox">
+                        <div class="row">
+                            <div class="col-md-12 px-md-3 ">
+                                <h4 class="text-center"><span class="badge font-weight-light bodyCreate p-2" style="width: 50%;">Head</span></h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.HeadFullName):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary @(Model.HeadFullName.Length<=40?"text-center text-md-left":"text-justify") px-md-2 py-1">
+                                @Html.DisplayFor(modelItem => Model.HeadFullName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.HeadEmail):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-center text-md-left pt-md-1 my-1 my-md-0 px-md-1 orangeLink">
+                                <a href="mailto:@Model.HeadEmail" class="text-primary d-block px-1 mb-md-2">
+                                    @Model.HeadEmail
+                                    <i class="fi-xnluxx-envelope-thin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 px-md-3 ">
+                                <h4 class="mb-0 mb-md-2"><span class="badge font-weight-light bodyCreate p-2" style="width: 100%;">@Html.DisplayNameFor(modelItem => Model.HeadTelephone):</span></h4>
+                            </div>
+                            <div class="col-md-7 text-primary text-justify text-center text-md-left px-md-2 py-1">
+                                @PhoneFormatter.FormatPhNumber(Model.HeadTelephone, "")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Branch Contracts*@
+        <section id="branchContracts">
+            <div class="row">
+                <div class="col-md-6 px-1 p-md-0">
+                    <div class="card card-body mb-2 mr-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.CurrentContractCount != default)
+                            {
+                                <div class="col">
+                                    <div class="whiteLink text-center">
+                                        <h4>
+                                            <a asp-controller="Contracts" asp-route-currentFilterType="currentContracts"
+                                               asp-route-currentFilterBranch="@Model.Name" asp-action="Index"
+                                               class="scaleBlueButton badge font-weight-light bodyCreate p-2"
+                                               style="width: 50%;">@Model.CurrentContractCount Current Contracts</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <div class="text-center">
+                                        <h4>
+                                            <span class="badge font-weight-light bodyCreate p-2"
+                                                  style="width: 50%;">@Model.CurrentContractCount Current Contracts</span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 px-1 p-md-0">
+                    <div class="card mb-2 card-body ml-md-1 shadowBox">
+                        <div class="row flex-nowrap">
+                            @if (Model.PastContractCount != default)
+                            {
+                                <div class="col text-center">
+                                    <div class="whiteLink">
+                                        <h4>
+                                            <a asp-controller="Contracts" asp-action="Index"
+                                               asp-route-currentFilterBranch="@Model.Name"
+                                               asp-route-currentFilterType="pastContracts"
+                                               class="scaleBlueButton badge font-weight-light bodyCreate p-2"
+                                               style="width: 50%;">@Model.PastContractCount Past Contracts</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col text-center">
+                                    <h4>
+                                        <span class="badge text-center font-weight-light bodyCreate p-2"
+                                              style="width: 50%;">@Model.PastContractCount Past Contracts</span>
+                                    </h4>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*Down Pannel Button*@
+        <section id="downPanelButton">
+            <div class="row">
+                <div class="col px-1 p-md-0">
+                    <div class="card mb-4">
+                        <div id="cardFooter" class="card-header bg-white d-flex justify-content-center py-1">
+                            <a asp-action="Index" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="To branches"
+                               class="scaleIcon btn btn-link p-0 text-primary mr-1">
+                                <i class="fi-xnllx2-arrow-simple"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+
+@*Modals*@
+@{
+    await Html.RenderPartialAsync("_ModalDeleteEntity");
+}
+
+
+
