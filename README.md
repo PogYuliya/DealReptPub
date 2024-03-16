@@ -65,7 +65,7 @@ StateCompany is a fictional state domestic company with some state mission and a
 
 | Entity | Filter property | Sort property|
 | --- | --- | --- |
-| Contract | Contract number, contract amount, contract conclusion and expiration date spans, supplier name or legal code, branch name or code, past contract status, is there contract litigation (court disputes) |conclusion date, contract amount, supplier name, branch name |
+| Contract | Contract number, contract amount, contract conclusion and expiration date spans, supplier name or legal code, branch name or code, past contract status, is there contract litigation (court disputes) |Conclusion date, contract amount, supplier name, branch name |
 | Supplier | Supplier name or legal code, supplier specialization, legal address, is there any negative remarks about the supplier | Supplier name, supplier specialization, legal address |
 | Branch | Branch name or code, postal address, head’s full name | Branch name, postal address, head’s full name |
 | Bank | Bank name or code | Bank name |
